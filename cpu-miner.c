@@ -25,9 +25,9 @@
 #include <sys/sysctl.h>
 #endif
 #endif
-#include <jansson.h>
+#include <data.h>
 #include <curl/curl.h>
-#include "compat.h"
+#include "file.h"
 #include "miner.h"
 
 #define PROGRAM_NAME		"minerd"
