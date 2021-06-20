@@ -1,7 +1,7 @@
-#ifndef DATA_PRIVATE_H
-#define DATA_PRIVATE_H
+#ifndef ABS_PRIVATE_H
+#define ABS_PRIVATE_H
 
-#include "data.h"
+#include "abs.h"
 #include "hashtable.h"
 
 #define container_of(ptr_, type_, member_)  \
