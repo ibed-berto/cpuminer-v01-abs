@@ -51,10 +51,10 @@ minerd_CFLAGS	= -Wno-pointer-sign -Wno-pointer-to-int-cast $(disable_flags)
 minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(ALL_INCLUDES)
 
 if HAVE_WINDOWS
-cpuminer_CFLAGS += -Wl,--stack,10485760
-cpuminer_LDADD += -lcrypt32 -lgdi32 -lgcc -lgcc_eh
+minerd_CFLAGS += -Wl,--stack,10485760
+minerd_LDADD += -lcrypt32 -lgdi32 -lgcc -lgcc_eh
 endif
 
 if ARCH_ARM
-cpuminer_CFLAGS += -D__arm__
+minerd_CFLAGS += -D__arm__
 endif
