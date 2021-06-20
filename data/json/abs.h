@@ -1,7 +1,7 @@
 
 
-#ifndef DATA_H
-#define DATA_H
+#ifndef ABS_H
+#define ABS_H
 
 #include <stdio.h>
 
