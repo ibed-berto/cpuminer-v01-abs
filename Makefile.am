@@ -8,8 +8,8 @@ EXTRA_DIST	= example-cfg.json nomacro.pl
 
 SUBDIRS		= data
 
-ALL_INCLUDES	= @PTHREAD_FLAGS@ -fno-strict-aliasing $(JANSSON_INCLUDES) -I.
-
+INCLUDES	= $(PTHREAD_FLAGS) -fno-strict-aliasing $(JANSSON_INCLUDES)
+INCLUDES       += -I$(top_srcdir)/abs
 bin_PROGRAMS	= minerd
 
 dist_man_MANS	= minerd.1
@@ -17,8 +17,8 @@ dist_man_MANS	= minerd.1
 minerd_SOURCES	= \
           cpu-miner.c util.c \
           yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
-          yescrypy/sha256_Y.c
-
+          yescrypy/sha256_Y.c/
+          m7m/m7mhash.c
 
 
 if USE_ASM
@@ -41,7 +41,6 @@ endif
 
 endif
 
-minerd_LDFLAGS	= $(PTHREAD_FLAGS)
-minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @ABS_LIBS@
-minerd_CFLAGS	= -fno-strict-aliasing
-minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
+minerd_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
+minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@ -lgmp -lcurl -lm
+minerd_CPPFLAGS = -Iabs -Ofast -march=native -flto -fuse-linker-plugin
