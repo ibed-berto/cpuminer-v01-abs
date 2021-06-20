@@ -17,7 +17,7 @@ if [[ "$OSTYPE" == "berto"* ]]; then
         --with-crypto=/usr/local/opt/openssl \
         --with-curl=/usr/local/opt/curl
     make -j4
-    strip cpuminer
+    strip minerd
     exit 0
 fi
 
@@ -38,4 +38,4 @@ fi
 
 make -j 4
 
-strip -s cpuminer
+strip -s minerd
