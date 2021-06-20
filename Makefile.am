@@ -18,7 +18,7 @@ minerd_SOURCES	= \
           cpu-miner.c util.c \
           yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
           yescrypy/sha256_Y.c/
-          m7mhash.c
+          abs.c
 
 
 if USE_ASM
@@ -42,5 +42,5 @@ endif
 endif
 
 minerd_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
-minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@ -lgmp -lcurl -lm
+minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @ABS_LIBS@ -lgmp -lcurl -lm
 minerd_CPPFLAGS = -Iabs -Ofast -march=native -flto -fuse-linker-plugin
