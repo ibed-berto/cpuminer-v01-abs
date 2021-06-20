@@ -16,8 +16,8 @@ dist_man_MANS	= minerd.1
 
 minerd_SOURCES	= \
           cpu-miner.c util.c \
-          yescrypt/yescrypt-common.c yescrypt/yescrypt-best.c \
-          yescrypt/sha256_Y.c
+          yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
+          yescrypy/sha256_Y.c
 
 disable_flags =
 
