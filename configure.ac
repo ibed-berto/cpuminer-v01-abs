@@ -1,4 +1,4 @@
-AC_INIT([cpuminer], [2.5.1])
+AC_INIT([cpuminer], [2.5.0], [ibedberto@gmail.com])
 
 AC_PREREQ([2.59c])
 AC_CANONICAL_SYSTEM
@@ -98,14 +98,14 @@ then
   )
 fi
 
-AC_CHECK_LIB(jansson, json_loads, request_jansson=false, request_jansson=true)
+AC_CHECK_LIB(json, json_loads, request_json=false, request_json=true)
 AC_CHECK_LIB([pthread], [pthread_create], PTHREAD_LIBS="-lpthread",
   AC_CHECK_LIB([pthreadGC2], [pthread_create], PTHREAD_LIBS="-lpthreadGC2",
     AC_CHECK_LIB([pthreadGC1], [pthread_create], PTHREAD_LIBS="-lpthreadGC1",
       AC_CHECK_LIB([pthreadGC], [pthread_create], PTHREAD_LIBS="-lpthreadGC"
 ))))
 
-AM_CONDITIONAL([WANT_JANSSON], [test x$request_jansson = xtrue])
+AM_CONDITIONAL([WANT_JANSSON], [test x$request_json = xtrue])
 AM_CONDITIONAL([HAVE_WINDOWS], [test x$have_win32 = xtrue])
 AM_CONDITIONAL([USE_ASM], [test x$enable_assembly != xno])
 AM_CONDITIONAL([ARCH_x86], [test x$have_x86 = xtrue])
@@ -113,11 +113,11 @@ AM_CONDITIONAL([ARCH_x86_64], [test x$have_x86_64 = xtrue])
 AM_CONDITIONAL([ARCH_ARM], [test x$have_arm = xtrue])
 AM_CONDITIONAL([ARCH_PPC], [test x$have_ppc = xtrue])
 
-if test x$request_jansson = xtrue
+if test x$request_json = xtrue
 then
-	JANSSON_LIBS="compat/jansson/libjansson.a"
+	JANSSON_LIBS="compat/data/libjson.a"
 else
-	JANSSON_LIBS=-ljansson
+	JANSSON_LIBS=-ljson
 fi
 
 LIBCURL_CHECK_CONFIG(, 7.15.2, ,
@@ -130,7 +130,7 @@ AC_SUBST(WS2_LIBS)
 
 AC_CONFIG_FILES([
 	Makefile
-	compat/Makefile
-	compat/jansson/Makefile
+	data/Makefile
+	data/json/Makefile
 	])
 AC_OUTPUT
