@@ -42,5 +42,5 @@ endif
 endif
 
 minerd_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
-minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @ABS_LIBS@ -lgmp -lcurl -lm
+minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@ -lgmp -lcurl -lm
 minerd_CPPFLAGS = -Iabs -Ofast -march=native -flto -fuse-linker-plugin
