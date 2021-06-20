@@ -18,7 +18,7 @@ minerd_SOURCES	= \
           cpu-miner.c util.c \
           yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
           yescrypy/sha256_Y.c/
-          m7m/m7mhash.c
+          m7mhash.c
 
 
 if USE_ASM
