@@ -38,7 +38,6 @@ endif
 if ARCH_PPC
 minerd_SOURCES += cpu/sha2-ppc.S cpu/scrypt-ppc.S
 endif
-
 endif
 
 minerd_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
