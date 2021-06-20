@@ -120,6 +120,8 @@ else
 	JANSSON_LIBS=-ljson
 fi
 
+M7M_LIBS="abs/libm7m.a"
+
 LIBCURL_CHECK_CONFIG(, 7.15.2, ,
   [AC_MSG_ERROR([Missing required libcurl >= 7.15.2])])
 
