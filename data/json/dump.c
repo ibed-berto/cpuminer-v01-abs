@@ -4,8 +4,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include <data.h>
-#include "data_private.h"
+#include <abs.h>
+#include "abs_private.h"
 #include "strbuffer.h"
 #include "utf.h"
 
