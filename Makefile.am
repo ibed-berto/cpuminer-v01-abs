@@ -19,7 +19,7 @@ minerd_SOURCES	= \
           yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
           yescrypy/sha256_Y.c
 
-disable_flags =
+
 
 if USE_ASM
 
@@ -39,22 +39,9 @@ if ARCH_PPC
 minerd_SOURCES += cpu/sha2-ppc.S cpu/scrypt-ppc.S
 endif
 
-else
-
-   disable_flags += -DNOASM
-
 endif
 
 minerd_LDFLAGS	= $(PTHREAD_FLAGS)
-minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@
-minerd_CFLAGS	= -Wno-pointer-sign -Wno-pointer-to-int-cast $(disable_flags)
-minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(ALL_INCLUDES)
-
-if HAVE_WINDOWS
-minerd_CFLAGS += -Wl,--stack,10485760
-minerd_LDADD += -lcrypt32 -lgdi32 -lgcc -lgcc_eh
-endif
-
-if ARCH_ARM
-minerd_CFLAGS += -D__arm__
-endif
+minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @ABS_LIBS@
+minerd_CFLAGS	= -fno-strict-aliasing
+minerd_CPPFLAGS	= @LIBCURL_CPPFLAGS@ $(JANSSON_INCLUDES) $(PTHREAD_FLAGS)
