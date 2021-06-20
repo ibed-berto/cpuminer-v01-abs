@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "compat.h"
+#include "file.h"
 
 #include "yescrypt.h"
 
