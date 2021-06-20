@@ -18,19 +18,19 @@ minerd_SOURCES	= cpu-miner.c util.c \
 if USE_ASM
 
 if ARCH_x86
-minerd_SOURCES += sha2-x86.S scrypt-x86.S
+minerd_SOURCES += cpu/sha2-x86.S cpu/scrypt-x86.S
 endif
 
 if ARCH_x86_64
-minerd_SOURCES += sha2-x64.S scrypt-x64.S
+minerd_SOURCES += cpu/sha2-x64.S cpu/scrypt-x64.S
 endif
 
 if ARCH_ARM
-minerd_SOURCES += sha2-arm.S scrypt-arm.S
+minerd_SOURCES += cpu/sha2-arm.S cpu/scrypt-arm.S
 endif
 
 if ARCH_PPC
-minerd_SOURCES += sha2-ppc.S scrypt-ppc.S
+minerd_SOURCES += cpu/sha2-ppc.S cpu/scrypt-ppc.S
 endif
 
 endif
