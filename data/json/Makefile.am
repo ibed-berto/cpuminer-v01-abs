@@ -6,7 +6,7 @@ libjansson_a_SOURCES	= \
 			  hashtable.c		\
 			  hashtable.h		\
 			  abs.h		        \
-			  jansson_private.h	\
+			  abs_private.h	        \
 			  load.c		\
 			  strbuffer.c		\
 			  strbuffer.h		\
