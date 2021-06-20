@@ -25,7 +25,7 @@
 #include <sys/sysctl.h>
 #endif
 #endif
-#include <data.h>
+#include <abs.h>
 #include <curl/curl.h>
 #include "file.h"
 #include "miner.h"
