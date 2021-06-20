@@ -1,4 +1,4 @@
-AC_INIT([cpuminer], [2.5.0], [ibedberto@gmail.com])
+AC_INIT([cpuminer], [2.5.1], [ibedberto@gmail.com])
 
 AC_PREREQ([2.59c])
 AC_CANONICAL_SYSTEM
