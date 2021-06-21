@@ -154,25 +154,25 @@ int scanhash_m7m_hash(int thr_id, uint32_t *pdata, const uint32_t *ptarget,
     sph_sha256_init(&ctx_final_sha256);
     
     sph_sha256_init(&ctx_sha256);
-    sph_sha256 (&ctx_sha256, data, M7_MIDSTATE_LEN);
+    sph_sha256 (&ctx_sha256, data, ABS_MIDSTATE_LEN);
     
     sph_sha512_init(&ctx_sha512);
-    sph_sha512 (&ctx_sha512, data, M7_MIDSTATE_LEN);
+    sph_sha512 (&ctx_sha512, data, ABS_MIDSTATE_LEN);
     
     sph_keccak512_init(&ctx_keccak);
-    sph_keccak512 (&ctx_keccak, data, M7_MIDSTATE_LEN);
+    sph_keccak512 (&ctx_keccak, data, ABS_MIDSTATE_LEN);
 
     sph_whirlpool_init(&ctx_whirlpool);
-    sph_whirlpool (&ctx_whirlpool, data, M7_MIDSTATE_LEN);
+    sph_whirlpool (&ctx_whirlpool, data, ABS_MIDSTATE_LEN);
     
     sph_haval256_5_init(&ctx_haval);
-    sph_haval256_5 (&ctx_haval, data, M7_MIDSTATE_LEN);
+    sph_haval256_5 (&ctx_haval, data, ABS_MIDSTATE_LEN);
 
     sph_tiger_init(&ctx_tiger);
-    sph_tiger (&ctx_tiger, data, M7_MIDSTATE_LEN);
+    sph_tiger (&ctx_tiger, data, ABS_MIDSTATE_LEN);
 
     sph_ripemd160_init(&ctx_ripemd);
-    sph_ripemd160 (&ctx_ripemd, data, M7_MIDSTATE_LEN);
+    sph_ripemd160 (&ctx_ripemd, data, ABS_MIDSTATE_LEN);
 
     sph_sha256_context       ctx2_sha256;
     sph_sha512_context       ctx2_sha512;
@@ -205,31 +205,31 @@ int scanhash_m7m_hash(int thr_id, uint32_t *pdata, const uint32_t *ptarget,
         memset(bhash, 0, 7 * 64);
 
         ctx2_sha256 = ctx_sha256;
-        sph_sha256 (&ctx2_sha256, data_p64, 80 - M7_MIDSTATE_LEN);
+        sph_sha256 (&ctx2_sha256, data_p64, 80 - ABS_MIDSTATE_LEN);
         sph_sha256_close(&ctx2_sha256, (void*)(bhash[0]));
 
         ctx2_sha512 = ctx_sha512;
-        sph_sha512 (&ctx2_sha512, data_p64, 80 - M7_MIDSTATE_LEN);
+        sph_sha512 (&ctx2_sha512, data_p64, 80 - ABS_MIDSTATE_LEN);
         sph_sha512_close(&ctx2_sha512, (void*)(bhash[1]));
         
         ctx2_keccak = ctx_keccak;
-        sph_keccak512 (&ctx2_keccak, data_p64, 80 - M7_MIDSTATE_LEN);
+        sph_keccak512 (&ctx2_keccak, data_p64, 80 - ABS_MIDSTATE_LEN);
         sph_keccak512_close(&ctx2_keccak, (void*)(bhash[2]));
 
         ctx2_whirlpool = ctx_whirlpool;
-        sph_whirlpool (&ctx2_whirlpool, data_p64, 80 - M7_MIDSTATE_LEN);
+        sph_whirlpool (&ctx2_whirlpool, data_p64, 80 - ABS_MIDSTATE_LEN);
         sph_whirlpool_close(&ctx2_whirlpool, (void*)(bhash[3]));
         
         ctx2_haval = ctx_haval;
-        sph_haval256_5 (&ctx2_haval, data_p64, 80 - M7_MIDSTATE_LEN);
+        sph_haval256_5 (&ctx2_haval, data_p64, 80 - ABS_MIDSTATE_LEN);
         sph_haval256_5_close(&ctx2_haval, (void*)(bhash[4]));
 
         ctx2_tiger = ctx_tiger;
-        sph_tiger (&ctx2_tiger, data_p64, 80 - M7_MIDSTATE_LEN);
+        sph_tiger (&ctx2_tiger, data_p64, 80 - ABS_MIDSTATE_LEN);
         sph_tiger_close(&ctx2_tiger, (void*)(bhash[5]));
 
         ctx2_ripemd = ctx_ripemd;
-        sph_ripemd160 (&ctx2_ripemd, data_p64, 80 - M7_MIDSTATE_LEN);
+        sph_ripemd160 (&ctx2_ripemd, data_p64, 80 - ABS_MIDSTATE_LEN);
         sph_ripemd160_close(&ctx2_ripemd, (void*)(bhash[6]));
 
 	mpz_import(bns0, a, -1, p, -1, 0, bhash[0]);
