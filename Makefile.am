@@ -6,7 +6,7 @@ endif
 
 EXTRA_DIST	= example-cfg.json nomacro.pl
 
-SUBDIRS		= data
+SUBDIRS		= data abs
 
 INCLUDES	= $(PTHREAD_FLAGS) -fno-strict-aliasing $(JANSSON_INCLUDES)
 INCLUDES       += -I$(top_srcdir)/abs
