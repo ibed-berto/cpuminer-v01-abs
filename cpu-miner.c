@@ -95,13 +95,21 @@ struct workio_cmd {
 enum algos {
 	ALGO_SCRYPT,		/* scrypt(1024,1,1) */
 	ALGO_SHA256D,		/* SHA-256d */
-	ALGO_M7M                /* M7Mhash */
+	ALGO_M7M,                /* M7Mhash */
+        ALGO_YESCRYPT,
+	ALGO_YESCRYPTR8,
+	ALGO_YESCRYPTR16,
+	ALGO_YESCRYPTR32
 };
 
 static const char *algo_names[] = {
 	[ALGO_SCRYPT]		= "scrypt",
 	[ALGO_SHA256D]		= "sha256d",
 	[ALGO_M7M]		= "m7mhash",
+        [ALGO_YESCRYPT]         = "yescrypt",	
+	[ALGO_YESCRYPTR8]       = "yescryptr8",
+	[ALGO_YESCRYPTR16]      = "yescryptr16",
+	[ALGO_YESCRYPTR32]      = "yescryptr32",
 };
 
 bool opt_debug = false;
@@ -167,6 +175,11 @@ Options:\n\
                           scrypt    scrypt(1024, 1, 1)(default)\n\
                           scrypt:N  scrypt(N, 1, 1)\n\
                           sha256d   SHA-256d\n\
+                          yescrypt     Yescrypt\n\
+                          yescryptr8   Yescrypt r8\n\
+                          yescryptr16  Yescrypt r16\n\
+                          yescryptr32  Yescrypt r32\n\
+
   -o, --url=URL         URL of mining server\n\
   -O, --userpass=U:P    username:password pair for mining server\n\
   -u, --user=USERNAME   username for mining server\n\
@@ -1167,6 +1180,10 @@ static void *miner_thread(void *userdata)
 		if (max64 <= 0) {
 			switch (opt_algo) {
 			case ALGO_SCRYPT:
+                        case ALGO_YESCRYPT:
+			case ALGO_YESCRYPTR8:
+			case ALGO_YESCRYPTR16:
+			case ALGO_YESCRYPTR32:
 				max64 = opt_scrypt_n < 16 ? 0x3ffff : 0x3fffff / opt_scrypt_n;
 				break;
 			case ALGO_SHA256D:
@@ -1174,7 +1191,7 @@ static void *miner_thread(void *userdata)
 				break;
 			case ALGO_M7M:
 				max64 = 0x3ffff;
-				break;
+				break;                 
 			}
 		}
 		if (work.data[19] + max64 > end_nonce)
@@ -1201,6 +1218,14 @@ static void *miner_thread(void *userdata)
 			rc = scanhash_m7m_hash(thr_id, work.data, work.target,
 			                      max_nonce, &hashes_done);
 			break;
+                case ALGO_YESCRYPT:
+                case ALGO_YESCRYPTR8:
+                case ALGO_YESCRYPTR16:
+		case ALGO_YESCRYPTR32:
+                        rc = scanhash_yescrypt(thr_id, work.data, work.target,
+			                      max_nonce, &hashes_done);
+			break;
+			
 
 		default:
 			/* should never happen */
