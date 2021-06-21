@@ -95,11 +95,13 @@ struct workio_cmd {
 enum algos {
 	ALGO_SCRYPT,		/* scrypt(1024,1,1) */
 	ALGO_SHA256D,		/* SHA-256d */
+	ALGO_M7M			/* M7Mhash */
 };
 
 static const char *algo_names[] = {
 	[ALGO_SCRYPT]		= "scrypt",
 	[ALGO_SHA256D]		= "sha256d",
+	[ALGO_M7M]			= "m7mhash",
 };
 
 bool opt_debug = false;
@@ -119,7 +121,8 @@ static int opt_retries = -1;
 static int opt_fail_pause = 30;
 int opt_timeout = 0;
 static int opt_scantime = 5;
-static enum algos opt_algo = ALGO_SCRYPT;
+static const bool opt_time = true;
+static enum algos opt_algo = ALGO_M7M;
 static int opt_scrypt_n = 1024;
 static int opt_n_threads;
 static int num_processors;
@@ -127,7 +130,7 @@ static char *rpc_url;
 static char *rpc_userpass;
 static char *rpc_user, *rpc_pass;
 static int pk_script_size;
-static unsigned char pk_script[42];
+static unsigned char pk_script[25];
 static char coinbase_sig[101] = "";
 char *opt_cert;
 char *opt_proxy;
@@ -324,10 +327,16 @@ static bool work_decode(const json_t *val, struct work *work)
 		goto err_out;
 	}
 
-	for (i = 0; i < ARRAY_SIZE(work->data); i++)
-		work->data[i] = le32dec(work->data + i);
-	for (i = 0; i < ARRAY_SIZE(work->target); i++)
-		work->target[i] = le32dec(work->target + i);
+	if (opt_algo != ALGO_M7M) {
+		for (i = 0; i < 32; i++)
+			work->data[i] = le32dec(work->data + i);
+		for (i = 0; i < ARRAY_SIZE(work->target); i++)
+			work->target[i] = le32dec(work->target + i);
+	}
+	if (opt_algo == ALGO_M7M) {
+		for (i = 0; i < 32; i++)
+                        be32enc(work->data + i, work->data[i]);
+    }
 
 	return true;
 
@@ -343,27 +352,15 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 	uint32_t target[8];
 	int cbtx_size;
 	unsigned char *cbtx = NULL;
-	unsigned char *tx = NULL;
 	int tx_count, tx_size;
 	unsigned char txc_vi[9];
 	unsigned char (*merkle_tree)[32] = NULL;
 	bool coinbase_append = false;
 	bool submit_coinbase = false;
-	bool segwit = false;
+	bool version_force = false;
+	bool version_reduce = false;
 	json_t *tmp, *txa;
 	bool rc = false;
-
-	tmp = json_object_get(val, "rules");
-	if (tmp && json_is_array(tmp)) {
-		n = json_array_size(tmp);
-		for (i = 0; i < n; i++) {
-			const char *s = json_string_value(json_array_get(tmp, i));
-			if (!s)
-				continue;
-			if (!strcmp(s, "segwit") || !strcmp(s, "!segwit"))
-				segwit = true;
-		}
-	}
 
 	tmp = json_object_get(val, "mutable");
 	if (tmp && json_is_array(tmp)) {
@@ -376,6 +373,10 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 				coinbase_append = true;
 			else if (!strcmp(s, "submit/coinbase"))
 				submit_coinbase = true;
+			else if (!strcmp(s, "version/force"))
+				version_force = true;
+			else if (!strcmp(s, "version/reduce"))
+				version_reduce = true;
 		}
 	}
 
@@ -392,6 +393,14 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 		goto out;
 	}
 	version = json_integer_value(tmp);
+	if (version > 2) {
+		if (version_reduce) {
+			version = 2;
+		} else if (version_force) {
+			applog(LOG_ERR, "Unrecognized block version: %u", version);
+			goto out;
+		}
+	}
 
 	if (unlikely(!jobj_binary(val, "previousblockhash", prevhash, sizeof(prevhash)))) {
 		applog(LOG_ERR, "JSON invalid previousblockhash");
@@ -461,62 +470,19 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 		le32enc((uint32_t *)(cbtx+37), 0xffffffff); /* prev txout index */
 		cbtx_size = 43;
 		/* BIP 34: height in coinbase */
-		if (work->height >= 1 && work->height <= 16) {
-			/* Use OP_1-OP_16 to conform to Bitcoin's implementation. */
-			cbtx[42] = work->height + 0x50;
-			cbtx[cbtx_size++] = 0x00; /* OP_0; pads to 2 bytes */
-		} else {
-			for (n = work->height; n; n >>= 8) {
-				cbtx[cbtx_size++] = n & 0xff;
-				if (n < 0x100 && n >= 0x80)
-					cbtx[cbtx_size++] = 0;
-			}
-			cbtx[42] = cbtx_size - 43;
-		}
+		for (n = work->height; n; n >>= 8)
+			cbtx[cbtx_size++] = n & 0xff;
+		cbtx[42] = cbtx_size - 43;
 		cbtx[41] = cbtx_size - 42; /* scriptsig length */
 		le32enc((uint32_t *)(cbtx+cbtx_size), 0xffffffff); /* sequence */
 		cbtx_size += 4;
-		cbtx[cbtx_size++] = segwit ? 2 : 1; /* out-counter */
+		cbtx[cbtx_size++] = 1; /* out-counter */
 		le32enc((uint32_t *)(cbtx+cbtx_size), (uint32_t)cbvalue); /* value */
 		le32enc((uint32_t *)(cbtx+cbtx_size+4), cbvalue >> 32);
 		cbtx_size += 8;
 		cbtx[cbtx_size++] = pk_script_size; /* txout-script length */
 		memcpy(cbtx+cbtx_size, pk_script, pk_script_size);
 		cbtx_size += pk_script_size;
-		if (segwit) {
-			unsigned char (*wtree)[32] = calloc(tx_count + 2, 32);
-			memset(cbtx+cbtx_size, 0, 8); /* value */
-			cbtx_size += 8;
-			cbtx[cbtx_size++] = 38; /* txout-script length */
-			cbtx[cbtx_size++] = 0x6a; /* txout-script */
-			cbtx[cbtx_size++] = 0x24;
-			cbtx[cbtx_size++] = 0xaa;
-			cbtx[cbtx_size++] = 0x21;
-			cbtx[cbtx_size++] = 0xa9;
-			cbtx[cbtx_size++] = 0xed;
-			for (i = 0; i < tx_count; i++) {
-				const json_t *tx = json_array_get(txa, i);
-				const json_t *hash = json_object_get(tx, "hash");
-				if (!hash || !hex2bin(wtree[1+i], json_string_value(hash), 32)) {
-					applog(LOG_ERR, "JSON invalid transaction hash");
-					free(wtree);
-					goto out;
-				}
-				memrev(wtree[1+i], 32);
-			}
-			n = tx_count + 1;
-			while (n > 1) {
-				if (n % 2)
-					memcpy(wtree[n], wtree[n-1], 32);
-				n = (n + 1) / 2;
-				for (i = 0; i < n; i++)
-					sha256d(wtree[i], wtree[2*i], 64);
-			}
-			memset(wtree[1], 0, 32);  /* witness reserved value = 0 */
-			sha256d(cbtx+cbtx_size, wtree[0], 64);
-			cbtx_size += 32;
-			free(wtree);
-		}
 		le32enc((uint32_t *)(cbtx+cbtx_size), 0); /* lock time */
 		cbtx_size += 4;
 		coinbase_append = true;
@@ -571,43 +537,24 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 	work->txs = malloc(2 * (n + cbtx_size + tx_size) + 1);
 	bin2hex(work->txs, txc_vi, n);
 	bin2hex(work->txs + 2*n, cbtx, cbtx_size);
-	char *txs_end = work->txs + strlen(work->txs);
 
 	/* generate merkle root */
 	merkle_tree = malloc(32 * ((1 + tx_count + 1) & ~1));
-	size_t tx_buf_size = 32 * 1024;
-	tx = malloc(tx_buf_size);
 	sha256d(merkle_tree[0], cbtx, cbtx_size);
 	for (i = 0; i < tx_count; i++) {
 		tmp = json_array_get(txa, i);
 		const char *tx_hex = json_string_value(json_object_get(tmp, "data"));
-		const size_t tx_hex_len = tx_hex ? strlen(tx_hex) : 0;
-		const int tx_size = tx_hex_len / 2;
-		if (segwit) {
-			const char *txid = json_string_value(json_object_get(tmp, "txid"));
-			if (!txid || !hex2bin(merkle_tree[1 + i], txid, 32)) {
-				applog(LOG_ERR, "JSON invalid transaction txid");
-				goto out;
-			}
-			memrev(merkle_tree[1 + i], 32);
-		} else {
-			if (tx_size > tx_buf_size) {
-				free(tx);
-				tx_buf_size = tx_size * 2;
-				tx = malloc(tx_buf_size);
-			}
-			if (!tx_hex || !hex2bin(tx, tx_hex, tx_size)) {
-				applog(LOG_ERR, "JSON invalid transactions");
-				goto out;
-			}
-			sha256d(merkle_tree[1 + i], tx, tx_size);
+		const int tx_size = tx_hex ? strlen(tx_hex) / 2 : 0;
+		unsigned char *tx = malloc(tx_size);
+		if (!tx_hex || !hex2bin(tx, tx_hex, tx_size)) {
+			applog(LOG_ERR, "JSON invalid transactions");
+			free(tx);
+			goto out;
 		}
-		if (!submit_coinbase) {
-			strcpy(txs_end, tx_hex);
-			txs_end += tx_hex_len;
-		}
+		sha256d(merkle_tree[1 + i], tx, tx_size);
+		if (!submit_coinbase)
+			strcat(work->txs, tx_hex);
 	}
-	free(tx); tx = NULL;
 	n = 1 + tx_count;
 	while (n > 1) {
 		if (n % 2) {
@@ -655,7 +602,7 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 		if (!have_longpoll) {
 			char *lp_uri;
 			tmp = json_object_get(val, "longpolluri");
-			lp_uri = strdup(json_is_string(tmp) ? json_string_value(tmp) : rpc_url);
+			lp_uri = json_is_string(tmp) ? strdup(json_string_value(tmp)) : rpc_url;
 			have_longpoll = true;
 			tq_push(thr_info[longpoll_thr_id].q, lp_uri);
 		}
@@ -664,7 +611,6 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 	rc = true;
 
 out:
-	free(tx);
 	free(cbtx);
 	free(merkle_tree);
 	return rc;
@@ -711,23 +657,35 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 	}
 
 	if (have_stratum) {
-		uint32_t ntime, nonce;
-		char ntimestr[9], noncestr[9], *xnonce2str, *req;
+		if (opt_algo == ALGO_M7M) {
+			uint32_t ntime, nonce;
+			char ntimestr[9], noncestr[9], *xnonce2str;
 
-		le32enc(&ntime, work->data[17]);
-		le32enc(&nonce, work->data[19]);
-		bin2hex(ntimestr, (const unsigned char *)(&ntime), 4);
-		bin2hex(noncestr, (const unsigned char *)(&nonce), 4);
-		xnonce2str = abin2hex(work->xnonce2, work->xnonce2_len);
-		req = malloc(256 + strlen(rpc_user) + strlen(work->job_id) + 2 * work->xnonce2_len);
-		sprintf(req,
-			"{\"method\": \"mining.submit\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"], \"id\":4}",
-			rpc_user, work->job_id, xnonce2str, ntimestr, noncestr);
-		free(xnonce2str);
+			be32enc(&ntime, work->data[17]);
+			be32enc(&nonce, work->data[19]);
+			bin2hex(ntimestr, (const unsigned char *)(&ntime), 4);
+			bin2hex(noncestr, (const unsigned char *)(&nonce), 4);
+			xnonce2str = abin2hex(work->xnonce2, work->xnonce2_len);
+			sprintf(s,
+				"{\"method\": \"mining.submit\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"], \"id\":4}",
+				rpc_user, work->job_id, xnonce2str, ntimestr, noncestr);
+			free(xnonce2str);
+		} else {
+			uint32_t ntime, nonce;
+			char ntimestr[9], noncestr[9], *xnonce2str;
 
-		rc = stratum_send_line(&stratum, req);
-		free(req);
-		if (unlikely(!rc)) {
+			le32enc(&ntime, work->data[17]);
+			le32enc(&nonce, work->data[19]);
+			bin2hex(ntimestr, (const unsigned char *)(&ntime), 4);
+			bin2hex(noncestr, (const unsigned char *)(&nonce), 4);
+			xnonce2str = abin2hex(work->xnonce2, work->xnonce2_len);
+			sprintf(s,
+				"{\"method\": \"mining.submit\", \"params\": [\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"], \"id\":4}",
+				rpc_user, work->job_id, xnonce2str, ntimestr, noncestr);
+			free(xnonce2str);
+		}
+
+		if (unlikely(!stratum_send_line(&stratum, s))) {
 			applog(LOG_ERR, "submit_upstream_work stratum_send_line failed");
 			goto out;
 		}
@@ -782,8 +740,13 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 		json_decref(val);
 	} else {
 		/* build hex string */
-		for (i = 0; i < ARRAY_SIZE(work->data); i++)
-			le32enc(work->data + i, work->data[i]);
+		if (opt_algo == ALGO_M7M) {
+			for (i = 0; i < 32; i++)
+				be32enc(work->data + i, work->data[i]);
+		} else {
+			for (i = 0; i < 32; i++)
+				le32enc(work->data + i, work->data[i]);
+		}
 		bin2hex(data_str, (unsigned char *)work->data, sizeof(work->data));
 
 		/* build JSON-RPC request */
@@ -815,14 +778,13 @@ static const char *getwork_req =
 	"{\"method\": \"getwork\", \"params\": [], \"id\":0}\r\n";
 
 #define GBT_CAPABILITIES "[\"coinbasetxn\", \"coinbasevalue\", \"longpoll\", \"workid\"]"
-#define GBT_RULES "[\"segwit\"]"
 
 static const char *gbt_req =
 	"{\"method\": \"getblocktemplate\", \"params\": [{\"capabilities\": "
-	GBT_CAPABILITIES ", \"rules\": " GBT_RULES "}], \"id\":0}\r\n";
+	GBT_CAPABILITIES "}], \"id\":0}\r\n";
 static const char *gbt_lp_req =
 	"{\"method\": \"getblocktemplate\", \"params\": [{\"capabilities\": "
-	GBT_CAPABILITIES ", \"rules\": " GBT_RULES ", \"longpollid\": \"%s\"}], \"id\":0}\r\n";
+	GBT_CAPABILITIES ", \"longpollid\": \"%s\"}], \"id\":0}\r\n";
 
 static bool get_upstream_work(CURL *curl, struct work *work)
 {
@@ -1097,6 +1059,11 @@ static void stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 	work->data[20] = 0x80000000;
 	work->data[31] = 0x00000280;
 
+	if (opt_algo == ALGO_M7M) {
+		for (i = 0; i < 32; i++)
+            be32enc(work->data + i, work->data[i]);
+    }
+
 	pthread_mutex_unlock(&sctx->work_lock);
 
 	if (opt_debug) {
@@ -1106,7 +1073,7 @@ static void stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 		free(xnonce2str);
 	}
 
-	if (opt_algo == ALGO_SCRYPT)
+	if (opt_algo == ALGO_SCRYPT || opt_algo == ALGO_M7M)
 		diff_to_target(work->target, sctx->job.diff / 65536.0);
 	else
 		diff_to_target(work->target, sctx->job.diff);
@@ -1168,7 +1135,6 @@ static void *miner_thread(void *userdata)
 			if (!have_stratum &&
 			    (time(NULL) - g_work_time >= min_scantime ||
 			     work.data[19] >= end_nonce)) {
-				work_free(&g_work);
 				if (unlikely(!get_work(mythr, &g_work))) {
 					applog(LOG_ERR, "work retrieval failed, exiting "
 						"mining thread %d", mythr->id);
@@ -1206,6 +1172,9 @@ static void *miner_thread(void *userdata)
 			case ALGO_SHA256D:
 				max64 = 0x1fffff;
 				break;
+			case ALGO_M7M:
+				max64 = 0x3ffff;
+				break;
 			}
 		}
 		if (work.data[19] + max64 > end_nonce)
@@ -1225,6 +1194,11 @@ static void *miner_thread(void *userdata)
 
 		case ALGO_SHA256D:
 			rc = scanhash_sha256d(thr_id, work.data, work.target,
+			                      max_nonce, &hashes_done);
+			break;
+
+		case ALGO_M7M:
+			rc = scanhash_m7m_hash(thr_id, work.data, work.target,
 			                      max_nonce, &hashes_done);
 			break;
 
@@ -1341,7 +1315,6 @@ start:
 			soval = json_object_get(res, "submitold");
 			submit_old = soval ? json_is_true(soval) : false;
 			pthread_mutex_lock(&g_work_lock);
-			work_free(&g_work);
 			if (have_gbt)
 				rc = gbt_work_decode(res, &g_work);
 			else
@@ -1482,7 +1455,6 @@ static void show_version_and_exit(void)
 #endif
 #if defined(USE_ASM) && defined(__x86_64__)
 		" x86_64"
-		" PHE"
 #endif
 #if defined(USE_ASM) && (defined(__i386__) || defined(__x86_64__))
 		" SSE2"
@@ -1510,12 +1482,6 @@ static void show_version_and_exit(void)
 #endif
 #if defined(__ARM_NEON__)
 		" NEON"
-#endif
-#endif
-#if defined(USE_ASM) && (defined(__powerpc__) || defined(__ppc__) || defined(__PPC__))
-		" PowerPC"
-#if defined(__ALTIVEC__)
-		" AltiVec"
 #endif
 #endif
 		"\n");
@@ -1672,8 +1638,7 @@ static void parse_arg(int key, char *arg, char *pname)
 		if (ap != arg) {
 			if (strncasecmp(arg, "http://", 7) &&
 			    strncasecmp(arg, "https://", 8) &&
-			    strncasecmp(arg, "stratum+tcp://", 14) &&
-			    strncasecmp(arg, "stratum+tcps://", 15)) {
+			    strncasecmp(arg, "stratum+tcp://", 14)) {
 				fprintf(stderr, "%s: unknown protocol -- '%s'\n",
 					pname, arg);
 				show_usage_and_exit(1);
@@ -1884,8 +1849,7 @@ int main(int argc, char *argv[])
 	pthread_mutex_init(&stratum.sock_lock, NULL);
 	pthread_mutex_init(&stratum.work_lock, NULL);
 
-	flags = opt_benchmark || (strncasecmp(rpc_url, "https://", 8) &&
-	                          strncasecmp(rpc_url, "stratum+tcps://", 15))
+	flags = !opt_benchmark && strncmp(rpc_url, "https:", 6)
 	      ? (CURL_GLOBAL_ALL & ~CURL_GLOBAL_SSL)
 	      : CURL_GLOBAL_ALL;
 	if (curl_global_init(flags)) {
