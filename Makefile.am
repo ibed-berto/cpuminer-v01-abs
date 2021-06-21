@@ -17,7 +17,7 @@ dist_man_MANS	= minerd.1
 minerd_SOURCES	= \
           cpu-miner.c util.c \
           yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
-          yescrypy/sha256_Y.c/
+          yescrypy/sha256_Y.c\
           m7mhash.c
 
 
