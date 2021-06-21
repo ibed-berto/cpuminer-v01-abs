@@ -115,7 +115,7 @@ AM_CONDITIONAL([ARCH_PPC], [test x$have_ppc = xtrue])
 
 if test x$request_json = xtrue
 then
-	JANSSON_LIBS="data/data/libjson.a"
+	JANSSON_LIBS="data/json/libjson.a"
 else
 	JANSSON_LIBS=-ljson
 fi
