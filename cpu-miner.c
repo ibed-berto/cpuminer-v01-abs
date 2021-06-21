@@ -164,8 +164,7 @@ static char const usage[] = "\
 Usage: " PROGRAM_NAME " [OPTIONS]\n\
 Options:\n\
   -a, --algo=ALGO       specify the algorithm to use\n\
-                          m7mhash   m7m (default)\n\
-                          scrypt    scrypt(1024, 1, 1)\n\
+                          scrypt    scrypt(1024, 1, 1)(default)\n\
                           scrypt:N  scrypt(N, 1, 1)\n\
                           sha256d   SHA-256d\n\
   -o, --url=URL         URL of mining server\n\
@@ -173,8 +172,7 @@ Options:\n\
   -u, --user=USERNAME   username for mining server\n\
   -p, --pass=PASSWORD   password for mining server\n\
       --cert=FILE       certificate for mining server using SSL\n\
-  -x, --proxy=[PROTOCOL://]
-        HOST[:PORT]     connect through a proxy\n\
+  -x, --proxy=[PROTOCOL://]HOST[:PORT]   connect through a proxy\n\
   -t, --threads=N       number of miner threads (default: number of processors)\n\
   -r, --retries=N       number of times to retry if a network call fails\n\
                           (default: retry indefinitely)\n\
