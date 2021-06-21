@@ -10,7 +10,7 @@ make clean || echo clean
 rm -f config.status
 ./mining.sh
 
-if [[ "$OSTYPE" == "berto"* ]]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then
     ./nomacro.pl
     ./configure \
         CFLAGS="-march=native -O2 -Ofast -flto -DUSE_ASM -pg" \
