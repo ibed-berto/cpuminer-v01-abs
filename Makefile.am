@@ -14,10 +14,9 @@ bin_PROGRAMS	= minerd
 
 dist_man_MANS	= minerd.1
 
-minerd_SOURCES	= \
+minerd_SOURCES	= elist.h miner.h file.h \
           cpu-miner.c util.c \
-          yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
-          yescrypy/sha256_Y.c\
+          cpu/sha2.c cpu/scrypt.c \
           m7mhash.c
 
 
