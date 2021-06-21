@@ -25,23 +25,23 @@ mining_SOURCES	= \
 if USE_ASM
 
 if ARCH_x86
-minerd_SOURCES += cpu/sha2-x86.S cpu/scrypt-x86.S
+mining_SOURCES += cpu/sha2-x86.S cpu/scrypt-x86.S
 endif
 
 if ARCH_x86_64
-minerd_SOURCES += cpu/sha2-x64.S cpu/scrypt-x64.S
+mining_SOURCES += cpu/sha2-x64.S cpu/scrypt-x64.S
 endif
 
 if ARCH_ARM
-minerd_SOURCES += cpu/sha2-arm.S cpu/scrypt-arm.S
+mining_SOURCES += cpu/sha2-arm.S cpu/scrypt-arm.S
 endif
 
 if ARCH_PPC
-minerd_SOURCES += cpu/sha2-ppc.S cpu/scrypt-ppc.S
+mining_SOURCES += cpu/sha2-ppc.S cpu/scrypt-ppc.S
 endif
 endif
 
-minerd_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
-minerd_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@ -lgmp -lcurl -lm
-minerd_CPPFLAGS = -Iabs -Ofast -march=native -flto -fuse-linker-plugin
-minerd_CFLAGS   = -Wno-pointer-sign -Wno-pointer-to-int-cast $(disable_flags)
+mining_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
+mining_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@ -lgmp -lcurl -lm
+mining_CPPFLAGS = -Iabs -Ofast -march=native -flto -fuse-linker-plugin
+mining_CFLAGS   = -Wno-pointer-sign -Wno-pointer-to-int-cast $(disable_flags)
