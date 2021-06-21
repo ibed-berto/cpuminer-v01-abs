@@ -30,7 +30,7 @@
 #include "file.h"
 #include "miner.h"
 
-#define PROGRAM_NAME		"minerd"
+#define PROGRAM_NAME		"mining"
 #define LP_SCANTIME		60
 
 #ifdef __linux /* Linux specific policy and affinity management */
@@ -95,13 +95,13 @@ struct workio_cmd {
 enum algos {
 	ALGO_SCRYPT,		/* scrypt(1024,1,1) */
 	ALGO_SHA256D,		/* SHA-256d */
-	ALGO_M7M			/* M7Mhash */
+	ALGO_M7M                /* M7Mhash */
 };
 
 static const char *algo_names[] = {
 	[ALGO_SCRYPT]		= "scrypt",
 	[ALGO_SHA256D]		= "sha256d",
-	[ALGO_M7M]			= "m7mhash",
+	[ALGO_M7M]		= "m7mhash",
 };
 
 bool opt_debug = false;
