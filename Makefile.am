@@ -10,13 +10,15 @@ SUBDIRS		= data abs
 
 INCLUDES	= $(PTHREAD_FLAGS) -fno-strict-aliasing $(JANSSON_INCLUDES)
 INCLUDES       += -I$(top_srcdir)/abs
-bin_PROGRAMS	= minerd
+bin_PROGRAMS	= mining
 
-dist_man_MANS	= minerd.1
+dist_man_MANS	= mining.1
 
-minerd_SOURCES	= elist.h miner.h file.h \
+mining_SOURCES	= \
+          elist.h miner.h file.h \
           cpu-miner.c util.c \
-          cpu/sha2.c cpu/scrypt.c \
+          cpu/sha2.c \
+          cpu/scrypt.c \
           m7mhash.c
 
 
