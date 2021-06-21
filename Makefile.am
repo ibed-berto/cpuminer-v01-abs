@@ -19,7 +19,9 @@ mining_SOURCES	= \
           cpu-miner.c util.c \
           cpu/sha2.c \
           cpu/scrypt.c \
-          m7mhash.c
+          m7mhash.c \
+          yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
+          yescrypy/sha256_Y.c
 
 
 if USE_ASM
