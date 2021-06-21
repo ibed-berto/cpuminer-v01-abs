@@ -1,4 +1,3 @@
-
 #ifndef __MINER_H__
 #define __MINER_H__
 
@@ -131,14 +130,14 @@ static inline void le32enc(void *pp, uint32_t x)
 #define JSON_LOAD_FILE(path, err_ptr) json_load_file(path, err_ptr)
 #endif
 
-#define USER_AGENT PACKAGE_NAME "/" PACKAGE_VERSION
+#define USER_AGENT PACKAGE_NAME "/" PACKAGE_VERSION "-m7m"
 
 void sha256_init(uint32_t *state);
 void sha256_transform(uint32_t *state, const uint32_t *block, int swap);
 void sha256d(unsigned char *hash, const unsigned char *data, int len);
 
 #ifdef USE_ASM
-#if (defined(__APCS_32__) && defined(__ARM_NEON__)) || defined(__ALTIVEC__) || defined(__i386__) || defined(__x86_64__)
+#if defined(__ARM_NEON__) || defined(__i386__) || defined(__x86_64__)
 #define HAVE_SHA256_4WAY 1
 int sha256_use_4way();
 void sha256_init_4way(uint32_t *state);
@@ -159,6 +158,9 @@ extern unsigned char *scrypt_buffer_alloc(int N);
 extern int scanhash_scrypt(int thr_id, uint32_t *pdata,
 	unsigned char *scratchbuf, const uint32_t *ptarget,
 	uint32_t max_nonce, unsigned long *hashes_done, int N);
+
+int scanhash_m7m_hash(int thr_id, uint32_t *pdata, const uint32_t *ptarget,
+    uint64_t max_nonce, unsigned long *hashes_done);
 
 struct thr_info {
 	int		id;
@@ -197,7 +199,6 @@ extern struct work_restart *work_restart;
 extern void applog(int prio, const char *fmt, ...);
 extern json_t *json_rpc_call(CURL *curl, const char *url, const char *userpass,
 	const char *rpc_req, int *curl_err, int flags);
-void memrev(unsigned char *p, size_t len);
 extern void bin2hex(char *s, const unsigned char *p, size_t len);
 extern char *abin2hex(const unsigned char *p, size_t len);
 extern bool hex2bin(unsigned char *p, const char *hexstr, size_t len);
