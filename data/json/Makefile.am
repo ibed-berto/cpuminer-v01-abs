@@ -1,6 +1,6 @@
-noinst_LIBRARIES	= libjson.a
+noinst_LIBRARIES	= libjansson.a
 
-libjson_a_SOURCES	= \
+libjansson_a_SOURCES	= \
 			  config.h		\
 			  dump.c		\
 			  hashtable.c		\
