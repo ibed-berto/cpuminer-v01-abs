@@ -1,3 +1,5 @@
+
+
 #include "cpuminer-config.h"
 #define _GNU_SOURCE
 
