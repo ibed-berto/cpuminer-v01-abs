@@ -30,7 +30,15 @@
 #include "file.h"
 #include "miner.h"
 
-#define PROGRAM_NAME		"mining"
+#ifdef WIN32
+#include "data/winansi.h"
+BOOL WINAPI ConsoleHandler(DWORD);
+#endif
+#ifdef _MSC_VER
+#include <Mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+#endif
+
 #define LP_SCANTIME		60
 
 #ifdef __linux /* Linux specific policy and affinity management */
@@ -169,7 +177,7 @@ struct option {
 #endif
 
 static char const usage[] = "\
-Usage: " PROGRAM_NAME " [OPTIONS]\n\
+Usage: " PACKAGE_NAME " [OPTIONS]\n\
 Options:\n\
   -a, --algo=ALGO       specify the algorithm to use\n\
                           scrypt    scrypt(1024, 1, 1)(default)\n\
