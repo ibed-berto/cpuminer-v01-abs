@@ -121,12 +121,12 @@ uint32_t sw2_(int nnounce)
 
 #define NM7M 5
 #define SW_DIVS 5
-#define M7_MIDSTATE_LEN 76
+#define ABS_MIDSTATE_LEN 76
 int scanhash_m7m_hash(int thr_id, uint32_t *pdata, const uint32_t *ptarget,
     uint64_t max_nonce, unsigned long *hashes_done)
 {
     uint32_t data[32] __attribute__((aligned(128)));
-    uint32_t *data_p64 = data + (M7_MIDSTATE_LEN / sizeof(data[0]));
+    uint32_t *data_p64 = data + (ABS_MIDSTATE_LEN / sizeof(data[0]));
     uint32_t hash[8] __attribute__((aligned(32)));
     uint8_t bhash[7][64] __attribute__((aligned(32)));
     uint32_t n = pdata[19] - 1;
