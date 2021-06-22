@@ -18,7 +18,10 @@ mining_SOURCES	= elist.h miner.h file.h \
           cpu-miner.c util.c \
           cpu/sha2.c \
           cpu/scrypt.c \
-          m7mhash.c 
+          m7mhash.c \
+          yescrypy/yescrypt-common.c yescrypt/yescrypt-best.c \
+          yescrypy/sha256_Y.c \
+          yescrypy/yescrypt.c
           
 
 
@@ -44,3 +47,4 @@ endif
 mining_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
 mining_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@ -lgmp -lcurl -lm
 mining_CPPFLAGS = -Iabs -Ofast -march=native -flto -fuse-linker-plugin
+mining_CFLAGS   = -Wno-pointer-sign -Wno-pointer-to-int-cast $(disable_flags)
