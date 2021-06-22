@@ -123,21 +123,11 @@ fi
 M7M_LIBS="abs/libm7m.a"
 
 
-
 # SSL install path (for mingw : --with-crypto=/usr/local/ssl)
 AC_ARG_WITH([crypto],
    [  --with-crypto=PATH       prefix where openssl crypto is installed [default=/usr]])
 
-if test -n "$with_crypto" ; then
-   LIBCURL_CFLAGS="$LIBCURL_CFLAGS -I$with_crypto/include"
-   LIBCURL_CPPFLAGS="$LIBCURL_CPPFLAGS -I$with_crypto/include"
-   LIBCURL_LDFLAGS="-L$with_crypto/lib $LIBCURL_LDFLAGS"
-   LIBCURL="$LIBCURL -lssl -lcrypto"
-fi
 
-CFLAGS="$CFLAGS $LIBCURL_CFLAGS"
-CPPFLAGS="$CPPFLAGS $LIBCURL_CPPFLAGS"
-LDFLAGS="$LDFLAGS $LIBCURL_LDFLAGS"
 
 AC_CHECK_LIB([z],[gzopen],[],[])
 AC_CHECK_LIB([crypto],[EVP_DigestFinal_ex], crypto=yes, [AC_MSG_ERROR([OpenSSL crypto library required])])
