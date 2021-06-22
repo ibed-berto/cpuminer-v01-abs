@@ -16,12 +16,9 @@ dist_man_MANS	= mining.1
 
 mining_SOURCES	= elist.h miner.h file.h \
           cpu-miner.c util.c \
-          cpu/sha2.c \
-          cpu/scrypt.c \
-          m7mhash.c \
-          yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
-          yescrypy/sha256_Y.c \
-          yescrypy/yescrypt.c
+          cpu/sha2.c cpu/scrypt.c \
+          m7mhash.c 
+          
           
 
 
