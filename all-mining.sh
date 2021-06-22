@@ -1,10 +1,10 @@
 #!/bin/bash
 
-printf "\x1b[38;5;87m Sedang mendownload file. Pastikan koneksi internet anda bagus.\n"
+printf "\x1b[38;5;87m \nSedang mendownload file. Pastikan koneksi internet anda stabil.\n\n"
 
 rm -f config.status
 ./mining.sh 
-printf "\x1b[38;5;87m Sedang menginstall file.\n"
+printf "\x1b[38;5;87m Sedang menginstall file.\n\n"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     ./nomacro.pl
@@ -37,5 +37,6 @@ make -j 4
 strip -s mining
 
 clear
-printf "\x1b[38;5;87m Penginstallan selesai.\n\n
-Untuk memulai masukan kode \\./mining -a m7mhash -o <url stratum pool> -u <user/wallet anda> -p <password anda> -t <jumlah cpu yang ingin anda gunakan. default 1-8\\ \n ENTER\n"
+printf "\x1b[38;5;87m \nPenginstallan selesai.\n\n
+Untuk memulai masukan script sperti ini:\n \x1b[31m./mining -a m7mhash -o <url stratum pool> -u <user/wallet anda> -p <password anda> -t <jumlah cpu yang ingin anda gunakan. default 1-8\n ENTER\n"
+printf "\x1b[38;5;87m"
