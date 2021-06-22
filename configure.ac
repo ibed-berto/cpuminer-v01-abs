@@ -151,7 +151,8 @@ AC_CHECK_LIB([z],[gzopen],[],[])
 AC_CHECK_LIB([crypto],[EVP_DigestFinal_ex], crypto=yes, [AC_MSG_ERROR([OpenSSL crypto library required])])
 AC_CHECK_LIB([ssl],[SSL_free], ssl=yes, ssl=no)
 
-# LIBCURL_CHECK_CONFIG([yes], 7.15, curlconfig=yes, curlconfig=no)
+LIBCURL_CHECK_CONFIG(, 7.15.2, ,
+  [AC_MSG_ERROR([Missing required libcurl >= 7.15.2])])
 
 AC_SUBST(LIBCURL)
 AC_SUBST(LIBCURL_CFLAGS)
