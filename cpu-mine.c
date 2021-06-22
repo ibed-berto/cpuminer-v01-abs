@@ -38,7 +38,7 @@
 #include "miner.h"
 
 #ifdef WIN32
-#include "compat/winansi.h"
+#include "data/winansi.h"
 BOOL WINAPI ConsoleHandler(DWORD);
 #endif
 #ifdef _MSC_VER
@@ -67,147 +67,23 @@ struct workio_cmd {
 };
 
 enum algos {
-	ALGO_KECCAK,      /* Keccak (old) */
-	ALGO_KECCAKC,     /* Keccak */
-	ALGO_HEAVY,       /* Heavy */
-	ALGO_NEOSCRYPT,   /* NeoScrypt(128, 2, 1) with Salsa20/20 and ChaCha20/20 */
-	ALGO_QUARK,       /* Quark */
-	ALGO_ALLIUM,      /* Garlicoin double lyra2 */
-	ALGO_AXIOM,       /* Shabal 256 Memohash */
-	ALGO_BASTION,
-	ALGO_BLAKE,       /* Blake 256 */
-	ALGO_BLAKECOIN,   /* Simplified 8 rounds Blake 256 */
-	ALGO_BLAKE2B,
-	ALGO_BLAKE2S,     /* Blake2s */
-	ALGO_BMW,         /* BMW 256 */
-	ALGO_C11,         /* C11 Chaincoin/Flaxcoin X11 variant */
-	ALGO_CRYPTOLIGHT, /* cryptonight-light (Aeon) */
-	ALGO_CRYPTONIGHT, /* CryptoNight */
-	ALGO_DECRED,      /* Decred */
-	ALGO_DMD_GR,      /* Diamond */
-	ALGO_DROP,        /* Dropcoin */
-	ALGO_FRESH,       /* Fresh */
-	ALGO_GEEK,
-	ALGO_GROESTL,     /* Groestl */
-	ALGO_JHA,
-	ALGO_LBRY,        /* Lbry Sha Ripemd */
-	ALGO_LUFFA,       /* Luffa (Joincoin, Doom) */
-	ALGO_LYRA2,       /* Lyra2RE */
-	ALGO_LYRA2REV2,   /* Lyra2REv2 */
-	ALGO_LYRA2V3,     /* Lyra2REv3 (Vertcoin) */
-	ALGO_MYR_GR,      /* Myriad Groestl */
-	ALGO_NIST5,       /* Nist5 */
-	ALGO_PENTABLAKE,  /* Pentablake */
-	ALGO_PHI1612,
-	ALGO_PHI2,
-	ALGO_PLUCK,       /* Pluck (Supcoin) */
-	ALGO_QUBIT,       /* Qubit */
-	ALGO_RAINFOREST,  /* RainForest */
+	
 	ALGO_SCRYPT,      /* scrypt */
-	ALGO_SCRYPTJANE,  /* Chacha */
-	ALGO_SHAVITE3,    /* Shavite3 */
 	ALGO_SHA256D,     /* SHA-256d */
-	ALGO_SIA,         /* Blake2-B */
-	ALGO_SIB,         /* X11 + gost (Sibcoin) */
-	ALGO_SKEIN,       /* Skein */
-	ALGO_SKEIN2,      /* Double skein (Woodcoin) */
-	ALGO_SONOA,
-	ALGO_S3,          /* S3 */
-	ALGO_TIMETRAVEL,  /* Timetravel-8 (Machinecoin) */
-	ALGO_BITCORE,     /* Timetravel-10 (Bitcore) */
-	ALGO_TRIBUS,      /* Denarius jh/keccak/echo */
-	ALGO_VANILLA,     /* Vanilla (Blake256 8-rounds - double sha256) */
-	ALGO_VELTOR,      /* Skein Shavite Shabal Streebog */
-	ALGO_X11EVO,      /* Permuted X11 */
-	ALGO_X11,         /* X11 */
-	ALGO_X12,
-	ALGO_X13,         /* X13 */
-	ALGO_X14,         /* X14 */
-	ALGO_X15,         /* X15 */
-	ALGO_X16R,        /* X16R */
-	ALGO_X16RV2,      /* X16Rv2 */
-	ALGO_X16S,
-	ALGO_X17,         /* X17 */
-	ALGO_X20R,
-	ALGO_XEVAN,
 	ALGO_YESCRYPT,
 	ALGO_YESCRYPTR8,
 	ALGO_YESCRYPTR16,
-	ALGO_YESCRYPTR32,
-	ALGO_ZR5,
-	ALGO_COUNT
+	ALGO_YESCRYPTR32
 };
 
 static const char *algo_names[] = {
-	"keccak",
-	"keccakc",
-	"heavy",
-	"neoscrypt",
-	"quark",
-	"allium",
-	"axiom",
-	"bastion",
-	"blake",
-	"blakecoin",
-	"blake2b",
-	"blake2s",
-	"bmw",
-	"c11",
-	"cryptolight",
-	"cryptonight",
-	"decred",
-	"dmd-gr",
-	"drop",
-	"fresh",
-	"geek",
-	"groestl",
-	"jha",
-	"lbry",
-	"luffa",
-	"lyra2re",
-	"lyra2rev2",
-	"lyra2v3",
-	"myr-gr",
-	"nist5",
-	"pentablake",
-	"phi1612",
-	"phi2",
-	"pluck",
-	"qubit",
-	"rainforest",
+	
 	"scrypt",
-	"scrypt-jane",
-	"shavite3",
 	"sha256d",
-	"sia",
-	"sib",
-	"skein",
-	"skein2",
-	"sonoa",
-	"s3",
-	"timetravel",
-	"bitcore",
-	"tribus",
-	"vanilla",
-	"veltor",
-	"x11evo",
-	"x11",
-	"x12",
-	"x13",
-	"x14",
-	"x15",
-	"x16r",
-	"x16rv2",
-	"x16s",
-	"x17",
-	"x20r",
-	"xevan",
 	"yescrypt",
 	"yescryptr8",
 	"yescryptr16",
-	"yescryptr32",
-	"zr5",
-	"\0"
+	"yescryptr32"
 };
 
 bool opt_debug = false;
@@ -311,71 +187,16 @@ static char const usage[] = "\
 Usage: " PACKAGE_NAME " [OPTIONS]\n\
 Options:\n\
   -a, --algo=ALGO       specify the algorithm to use\n\
-                          allium       Garlicoin double lyra2\n\
-                          axiom        Shabal-256 MemoHash\n\
-                          bitcore      Timetravel with 10 algos\n\
-                          blake        Blake-256 14-rounds (SFR)\n\
-                          blakecoin    Blake-256 single sha256 merkle\n\
-                          blake2b      Blake2-B (512)\n\
-                          blake2s      Blake2-S (256)\n\
-                          bmw          BMW 256\n\
-                          c11/flax     C11\n\
-                          cryptolight  Cryptonight-light\n\
-                          cryptonight  Monero\n\
-                          decred       Blake-256 14-rounds 180 bytes\n\
-                          dmd-gr       Diamond-Groestl\n\
-                          drop         Dropcoin\n\
-                          fresh        Fresh\n\
-                          geek         GeekCash\n\
-                          groestl      GroestlCoin\n\
-                          heavy        Heavy\n\
-                          jha          JHA\n\
-                          keccak       Keccak (Old and deprecated)\n\
-                          keccakc      Keccak (CreativeCoin)\n\
-                          luffa        Luffa\n\
-                          lyra2re      Lyra2RE\n\
-                          lyra2rev2    Lyra2REv2\n\
-                          lyra2v3      Lyra2REv3 (Vertcoin)\n\
-                          myr-gr       Myriad-Groestl\n\
-                          neoscrypt    NeoScrypt(128, 2, 1)\n\
-                          nist5        Nist5\n\
-                          pluck        Pluck:128 (Supcoin)\n\
-                          pentablake   Pentablake\n\
-                          phi          LUX initial algo\n\
-                          phi2         LUX newer algo\n\
-                          quark        Quark\n\
-                          qubit        Qubit\n\
-                          rainforest   RainForest (256)\n\
+                          
                           scrypt       scrypt(1024, 1, 1) (default)\n\
                           scrypt:N     scrypt(N, 1, 1)\n\
                           scrypt-jane:N (with N factor from 4 to 30)\n\
-                          shavite3     Shavite3\n\
+                          
                           sha256d      SHA-256d\n\
-                          sia          Blake2-B\n\
-                          sib          X11 + gost (SibCoin)\n\
-                          skein        Skein+Sha (Skeincoin)\n\
-                          skein2       Double Skein (Woodcoin)\n\
-                          sonoa        A series of 97 hashes from x17\n\
-                          s3           S3\n\
-                          timetravel   Timetravel (Machinecoin)\n\
-                          vanilla      Blake-256 8-rounds\n\
-                          x11evo       Permuted x11\n\
-                          x11          X11\n\
-                          x12          X12\n\
-                          x13          X13\n\
-                          x14          X14\n\
-                          x15          X15\n\
-                          x16r         X16R\n\
-                          x16rv2       X16Rv2 (Raven / Trivechain)\n\
-                          x16s         X16S (Pigeon)\n\
-                          x17          X17\n\
-                          x20r         X20R\n\
-                          xevan        Xevan (BitSend)\n\
                           yescrypt     Yescrypt\n\
                           yescryptr8   Yescrypt r8\n\
                           yescryptr16  Yescrypt r16\n\
                           yescryptr32  Yescrypt r32\n\
-                          zr5          ZR5\n\
   -o, --url=URL         URL of mining server\n\
   -O, --userpass=U:P    username:password pair for mining server\n\
   -u, --user=USERNAME   username for mining server\n\
@@ -2176,21 +1997,13 @@ static void *miner_thread(void *userdata)
 		if (max64 <= 0) {
 			switch (opt_algo) {
 			case ALGO_SCRYPT:
-			case ALGO_NEOSCRYPT:
 				max64 = opt_scrypt_n < 16 ? 0x3ffff : 0x3fffff / opt_scrypt_n;
 				if (opt_nfactor > 3)
 					max64 >>= (opt_nfactor - 3);
 				else if (opt_nfactor > 16)
 					max64 = 0xF;
 				break;
-			case ALGO_AXIOM:
-			case ALGO_CRYPTOLIGHT:
-			case ALGO_CRYPTONIGHT:
-			case ALGO_SCRYPTJANE:
-				max64 = 0x40LL;
-				break;
-			case ALGO_DROP:
-			case ALGO_PLUCK:
+			
 			case ALGO_YESCRYPT:
 			case ALGO_YESCRYPTR8:
 				max64 = 0x1ff;
@@ -2199,62 +2012,7 @@ static void *miner_thread(void *userdata)
 			case ALGO_YESCRYPTR32:
 				max64 = 0xfff;
 				break;
-			case ALGO_ALLIUM:
-			case ALGO_LYRA2:
-			case ALGO_LYRA2REV2:
-			case ALGO_LYRA2V3:
-			case ALGO_PHI1612:
-			case ALGO_PHI2:
-			case ALGO_TIMETRAVEL:
-			case ALGO_BITCORE:
-			case ALGO_XEVAN:
-				max64 = 0xffff;
-				break;
-			case ALGO_C11:
-			case ALGO_DMD_GR:
-			case ALGO_FRESH:
-			case ALGO_GEEK:
-			case ALGO_GROESTL:
-			case ALGO_MYR_GR:
-			case ALGO_SIB:
-			case ALGO_VELTOR:
-			case ALGO_X11EVO:
-			case ALGO_X11:
-			case ALGO_X12:
-			case ALGO_X13:
-			case ALGO_X14:
-				max64 = 0x3ffff;
-				break;
-			case ALGO_LBRY:
-			case ALGO_SONOA:
-			case ALGO_TRIBUS:
-			case ALGO_X15:
-			case ALGO_X16R:
-			case ALGO_X16RV2:
-			case ALGO_X16S:
-			case ALGO_X17:
-			case ALGO_X20R:
-			case ALGO_ZR5:
-				max64 = 0x1ffff;
-				break;
-			case ALGO_BMW:
-			case ALGO_PENTABLAKE:
-				max64 = 0x3ffff;
-				break;
-			case ALGO_SKEIN:
-			case ALGO_SKEIN2:
-				max64 = 0x7ffffLL;
-				break;
-			case ALGO_BLAKE:
-			case ALGO_BLAKECOIN:
-			case ALGO_DECRED:
-			case ALGO_VANILLA:
-				max64 = 0x3fffffLL;
-				break;
-			case ALGO_SIA:
-			default:
-				max64 = 0x1fffffLL;
-				break;
+			
 			}
 		}
 		if ((*nonceptr) + max64 > end_nonce)
