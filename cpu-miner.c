@@ -1,6 +1,6 @@
 
 
-#include <cpuminer-config.h>
+#include <cpu-miner-config.h>
 #define _GNU_SOURCE
 
 #include <stdio.h>
