@@ -24,12 +24,12 @@
 #include <sys/sysctl.h>
 #endif
 #endif
-#include <jansson.h>
+#include <abs.h>
 #include <curl/curl.h>
-#include "compat.h"
+#include "file.h"
 #include "miner.h"
 
-#define PROGRAM_NAME		"minerd"
+#define PROGRAM_NAME		"mining"
 #define LP_SCANTIME		60
 
 #ifdef __linux /* Linux specific policy and affinity management */
