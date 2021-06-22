@@ -1,3 +1,5 @@
+
+#include "cpuminer-config.h"
 #include "miner.h"
 
 #include <stdlib.h>
@@ -128,7 +130,7 @@ static const uint32_t outerpad_4way[4 * 8] = {
 	0x00000000, 0x00000000, 0x00000000, 0x00000000,
 	0x00000300, 0x00000300, 0x00000300, 0x00000300
 };
-static const uint32_t _ALIGN(16) finalblk_4way[4 * 16] = {
+static const uint32_t finalblk_4way[4 * 16] __attribute__((aligned(16))) = {
 	0x00000001, 0x00000001, 0x00000001, 0x00000001,
 	0x80000000, 0x80000000, 0x80000000, 0x80000000,
 	0x00000000, 0x00000000, 0x00000000, 0x00000000,
@@ -150,8 +152,8 @@ static const uint32_t _ALIGN(16) finalblk_4way[4 * 16] = {
 static inline void HMAC_SHA256_80_init_4way(const uint32_t *key,
 	uint32_t *tstate, uint32_t *ostate)
 {
-	uint32_t _ALIGN(16) ihash[4 * 8];
-	uint32_t _ALIGN(16) pad[4 * 16];
+	uint32_t ihash[4 * 8] __attribute__((aligned(16)));
+	uint32_t pad[4 * 16] __attribute__((aligned(16)));
 	int i;
 
 	/* tstate is assumed to contain the midstate of key */
@@ -178,10 +180,10 @@ static inline void HMAC_SHA256_80_init_4way(const uint32_t *key,
 static inline void PBKDF2_SHA256_80_128_4way(const uint32_t *tstate,
 	const uint32_t *ostate, const uint32_t *salt, uint32_t *output)
 {
-	uint32_t _ALIGN(16) istate[4 * 8];
-	uint32_t _ALIGN(16) ostate2[4 * 8];
-	uint32_t _ALIGN(16) ibuf[4 * 16];
-	uint32_t _ALIGN(16) obuf[4 * 16];
+	uint32_t istate[4 * 8] __attribute__((aligned(16)));
+	uint32_t ostate2[4 * 8] __attribute__((aligned(16)));
+	uint32_t ibuf[4 * 16] __attribute__((aligned(16)));
+	uint32_t obuf[4 * 16] __attribute__((aligned(16)));
 	int i, j;
 
 	memcpy(istate, tstate, 4 * 32);
@@ -209,7 +211,7 @@ static inline void PBKDF2_SHA256_80_128_4way(const uint32_t *tstate,
 static inline void PBKDF2_SHA256_128_32_4way(uint32_t *tstate,
 	uint32_t *ostate, const uint32_t *salt, uint32_t *output)
 {
-	uint32_t _ALIGN(16) buf[4 * 16];
+	uint32_t buf[4 * 16] __attribute__((aligned(16)));
 	int i;
 	
 	sha256_transform_4way(tstate, salt, 1);
@@ -228,7 +230,7 @@ static inline void PBKDF2_SHA256_128_32_4way(uint32_t *tstate,
 
 #ifdef HAVE_SHA256_8WAY
 
-static const uint32_t _ALIGN(32) finalblk_8way[8 * 16] = {
+static const uint32_t finalblk_8way[8 * 16] __attribute__((aligned(32))) = {
 	0x00000001, 0x00000001, 0x00000001, 0x00000001, 0x00000001, 0x00000001, 0x00000001, 0x00000001,
 	0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000,
 	0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
@@ -250,8 +252,8 @@ static const uint32_t _ALIGN(32) finalblk_8way[8 * 16] = {
 static inline void HMAC_SHA256_80_init_8way(const uint32_t *key,
 	uint32_t *tstate, uint32_t *ostate)
 {
-	uint32_t _ALIGN(32) ihash[8 * 8];
-	uint32_t _ALIGN(32)  pad[8 * 16];
+	uint32_t ihash[8 * 8] __attribute__((aligned(32)));
+	uint32_t pad[8 * 16] __attribute__((aligned(32)));
 	int i;
 	
 	/* tstate is assumed to contain the midstate of key */
@@ -282,10 +284,10 @@ static inline void HMAC_SHA256_80_init_8way(const uint32_t *key,
 static inline void PBKDF2_SHA256_80_128_8way(const uint32_t *tstate,
 	const uint32_t *ostate, const uint32_t *salt, uint32_t *output)
 {
-	uint32_t _ALIGN(32) istate[8 * 8];
-	uint32_t _ALIGN(32) ostate2[8 * 8];
-	uint32_t _ALIGN(32) ibuf[8 * 16];
-	uint32_t _ALIGN(32) obuf[8 * 16];
+	uint32_t istate[8 * 8] __attribute__((aligned(32)));
+	uint32_t ostate2[8 * 8] __attribute__((aligned(32)));
+	uint32_t ibuf[8 * 16] __attribute__((aligned(32)));
+	uint32_t obuf[8 * 16] __attribute__((aligned(32)));
 	int i, j;
 	
 	memcpy(istate, tstate, 8 * 32);
@@ -326,7 +328,7 @@ static inline void PBKDF2_SHA256_80_128_8way(const uint32_t *tstate,
 static inline void PBKDF2_SHA256_128_32_8way(uint32_t *tstate,
 	uint32_t *ostate, const uint32_t *salt, uint32_t *output)
 {
-	uint32_t _ALIGN(32) buf[8 * 16];
+	uint32_t buf[8 * 16] __attribute__((aligned(32)));
 	int i;
 	
 	sha256_transform_8way(tstate, salt, 1);
@@ -451,16 +453,16 @@ static inline void xor_salsa8(uint32_t B[16], const uint32_t Bx[16])
 
 static inline void scrypt_core(uint32_t *X, uint32_t *V, int N)
 {
-	int i;
-
+	uint32_t i, j, k;
+	
 	for (i = 0; i < N; i++) {
 		memcpy(&V[i * 32], X, 128);
 		xor_salsa8(&X[0], &X[16]);
 		xor_salsa8(&X[16], &X[0]);
 	}
 	for (i = 0; i < N; i++) {
-		uint32_t j = 32 * (X[16] & (N - 1));
-		for (uint8_t k = 0; k < 32; k++)
+		j = 32 * (X[16] & (N - 1));
+		for (k = 0; k < 32; k++)
 			X[k] ^= V[j + k];
 		xor_salsa8(&X[0], &X[16]);
 		xor_salsa8(&X[16], &X[0]);
@@ -476,7 +478,7 @@ static inline void scrypt_core(uint32_t *X, uint32_t *V, int N)
 
 unsigned char *scrypt_buffer_alloc(int N)
 {
-	return (uchar*) malloc((size_t)N * SCRYPT_MAX_WAYS * 128 + 63);
+	return malloc((size_t)N * SCRYPT_MAX_WAYS * 128 + 63);
 }
 
 static void scrypt_1024_1_1_256(const uint32_t *input, uint32_t *output,
@@ -501,10 +503,10 @@ static void scrypt_1024_1_1_256(const uint32_t *input, uint32_t *output,
 static void scrypt_1024_1_1_256_4way(const uint32_t *input,
 	uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
-	uint32_t _ALIGN(128) tstate[4 * 8];
-	uint32_t _ALIGN(128) ostate[4 * 8];
-	uint32_t _ALIGN(128) W[4 * 32];
-	uint32_t _ALIGN(128) X[4 * 32];
+	uint32_t tstate[4 * 8] __attribute__((aligned(128)));
+	uint32_t ostate[4 * 8] __attribute__((aligned(128)));
+	uint32_t W[4 * 32] __attribute__((aligned(128)));
+	uint32_t X[4 * 32] __attribute__((aligned(128)));
 	uint32_t *V;
 	int i, k;
 	
@@ -540,8 +542,8 @@ static void scrypt_1024_1_1_256_4way(const uint32_t *input,
 static void scrypt_1024_1_1_256_3way(const uint32_t *input,
 	uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
-	uint32_t _ALIGN(64) tstate[3 * 8], ostate[3 * 8];
-	uint32_t _ALIGN(64) X[3 * 32];
+	uint32_t tstate[3 * 8], ostate[3 * 8];
+	uint32_t X[3 * 32] __attribute__((aligned(64)));
 	uint32_t *V;
 	
 	V = (uint32_t *)(((uintptr_t)(scratchpad) + 63) & ~ (uintptr_t)(63));
@@ -567,10 +569,10 @@ static void scrypt_1024_1_1_256_3way(const uint32_t *input,
 static void scrypt_1024_1_1_256_12way(const uint32_t *input,
 	uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
-	uint32_t _ALIGN(128) tstate[12 * 8];
-	uint32_t _ALIGN(128) ostate[12 * 8];
-	uint32_t _ALIGN(128) W[12 * 32];
-	uint32_t _ALIGN(128) X[12 * 32];
+	uint32_t tstate[12 * 8] __attribute__((aligned(128)));
+	uint32_t ostate[12 * 8] __attribute__((aligned(128)));
+	uint32_t W[12 * 32] __attribute__((aligned(128)));
+	uint32_t X[12 * 32] __attribute__((aligned(128)));
 	uint32_t *V;
 	int i, j, k;
 	
@@ -618,10 +620,10 @@ static void scrypt_1024_1_1_256_12way(const uint32_t *input,
 static void scrypt_1024_1_1_256_24way(const uint32_t *input,
 	uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
-	uint32_t _ALIGN(128) tstate[24 * 8];
-	uint32_t _ALIGN(128) ostate[24 * 8];
-	uint32_t _ALIGN(128) W[24 * 32];
-	uint32_t _ALIGN(128) X[24 * 32];
+	uint32_t tstate[24 * 8] __attribute__((aligned(128)));
+	uint32_t ostate[24 * 8] __attribute__((aligned(128)));
+	uint32_t W[24 * 32] __attribute__((aligned(128)));
+	uint32_t X[24 * 32] __attribute__((aligned(128)));
 	uint32_t *V;
 	int i, j, k;
 	
@@ -663,11 +665,10 @@ static void scrypt_1024_1_1_256_24way(const uint32_t *input,
 }
 #endif /* HAVE_SCRYPT_6WAY */
 
-extern int scanhash_scrypt(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done,
-	unsigned char *scratchbuf, uint32_t N)
+int scanhash_scrypt(int thr_id, uint32_t *pdata,
+	unsigned char *scratchbuf, const uint32_t *ptarget,
+	uint32_t max_nonce, unsigned long *hashes_done, int N)
 {
-	uint32_t *pdata = work->data;
-	uint32_t *ptarget = work->target;
 	uint32_t data[SCRYPT_MAX_WAYS * 20], hash[SCRYPT_MAX_WAYS * 8];
 	uint32_t midstate[8];
 	uint32_t n = pdata[19] - 1;
@@ -713,34 +714,15 @@ extern int scanhash_scrypt(int thr_id, struct work *work, uint32_t max_nonce, ui
 		scrypt_1024_1_1_256(data, hash, midstate, scratchbuf, N);
 		
 		for (i = 0; i < throughput; i++) {
-			if (unlikely(hash[i * 8 + 7] <= Htarg && fulltest(hash + i * 8, ptarget))) {
-				work_set_target_ratio(work, hash + i * 8);
+			if (hash[i * 8 + 7] <= Htarg && fulltest(hash + i * 8, ptarget)) {
 				*hashes_done = n - pdata[19] + 1;
 				pdata[19] = data[i * 20 + 19];
 				return 1;
 			}
 		}
-	} while (likely(n < max_nonce && !work_restart[thr_id].restart));
+	} while (n < max_nonce && !work_restart[thr_id].restart);
 	
 	*hashes_done = n - pdata[19] + 1;
 	pdata[19] = n;
 	return 0;
-}
-
-/* simple cpu test (util.c) */
-void scrypthash(void *output, const void *input, uint32_t N)
-{
-	uint32_t midstate[8];
-	char *scratchbuf = scrypt_buffer_alloc(N);
-
-	memset(output, 0, 32);
-	if (!scratchbuf)
-		return;
-
-	sha256_init(midstate);
-	sha256_transform(midstate, input, 0);
-
-	scrypt_1024_1_1_256((uint32_t*)input, (uint32_t*)output, midstate, scratchbuf, N);
-
-	free(scratchbuf);
 }
