@@ -152,11 +152,13 @@ void sha256_transform_8way(uint32_t *state, const uint32_t *block, int swap);
 #endif
 
 
-int scanhash_sha256d(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
+extern int scanhash_sha256d(int thr_id, uint32_t *pdata,
+	const uint32_t *ptarget, uint32_t max_nonce, unsigned long *hashes_done);
 
-unsigned char *scrypt_buffer_alloc(int N);
-int scanhash_scrypt(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done,
-					unsigned char *scratchbuf, uint32_t N);
+extern unsigned char *scrypt_buffer_alloc(int N);
+extern int scanhash_scrypt(int thr_id, uint32_t *pdata,
+	unsigned char *scratchbuf, const uint32_t *ptarget,
+	uint32_t max_nonce, unsigned long *hashes_done, int N);
 
 int scanhash_m7m_hash(int thr_id, uint32_t *pdata, const uint32_t *ptarget,
     uint64_t max_nonce, unsigned long *hashes_done);
@@ -255,26 +257,14 @@ bool stratum_subscribe(struct stratum_ctx *sctx);
 bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *pass);
 bool stratum_handle_method(struct stratum_ctx *sctx, const char *s);
 
-struct thread_q *tq_new(void);
-void tq_free(struct thread_q *tq);
-bool tq_push(struct thread_q *tq, void *data);
-void *tq_pop(struct thread_q *tq, const struct timespec *abstime);
-void tq_freeze(struct thread_q *tq);
-void tq_thaw(struct thread_q *tq);
+struct thread_q;
 
-void parse_arg(int key, char *arg);
-void parse_config(json_t *config, char *ref);
-void proper_exit(int reason);
-
-void applog_compare_hash(void *hash, void *hash_ref);
-void applog_hex(void *data, int len);
-void applog_hash(void *hash);
-void applog_hash64(void *hash);
-void format_hashrate(double hashrate, char *output);
-void print_hash_tests(void);
-
-void sha256d(unsigned char *hash, const unsigned char *data, int len);
-void scrypthash(void *output, const void *input, uint32_t N);
+extern struct thread_q *tq_new(void);
+extern void tq_free(struct thread_q *tq);
+extern bool tq_push(struct thread_q *tq, void *data);
+extern void *tq_pop(struct thread_q *tq, const struct timespec *abstime);
+extern void tq_freeze(struct thread_q *tq);
+extern void tq_thaw(struct thread_q *tq);
 
 
 #endif /* __MINER_H__ */
