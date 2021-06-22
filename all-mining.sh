@@ -1,6 +1,7 @@
 #!/bin/bash
 
-printf "\x1b[38;5;87m \nSedang mendownload file. Pastikan koneksi internet anda stabil.\n\n"
+clear
+printf "\x1b[38;5;87m \nSedang mengekstrak file.\n\n"
 
 rm -f config.status
 ./mining.sh 
