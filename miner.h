@@ -252,13 +252,26 @@ bool stratum_subscribe(struct stratum_ctx *sctx);
 bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *pass);
 bool stratum_handle_method(struct stratum_ctx *sctx, const char *s);
 
-struct thread_q;
+struct thread_q *tq_new(void);
+void tq_free(struct thread_q *tq);
+bool tq_push(struct thread_q *tq, void *data);
+void *tq_pop(struct thread_q *tq, const struct timespec *abstime);
+void tq_freeze(struct thread_q *tq);
+void tq_thaw(struct thread_q *tq);
 
-extern struct thread_q *tq_new(void);
-extern void tq_free(struct thread_q *tq);
-extern bool tq_push(struct thread_q *tq, void *data);
-extern void *tq_pop(struct thread_q *tq, const struct timespec *abstime);
-extern void tq_freeze(struct thread_q *tq);
-extern void tq_thaw(struct thread_q *tq);
+void parse_arg(int key, char *arg);
+void parse_config(json_t *config, char *ref);
+void proper_exit(int reason);
+
+void applog_compare_hash(void *hash, void *hash_ref);
+void applog_hex(void *data, int len);
+void applog_hash(void *hash);
+void applog_hash64(void *hash);
+void format_hashrate(double hashrate, char *output);
+void print_hash_tests(void);
+
+void sha256d(unsigned char *hash, const unsigned char *data, int len);
+void scrypthash(void *output, const void *input, uint32_t N);
+
 
 #endif /* __MINER_H__ */
