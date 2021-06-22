@@ -27,6 +27,7 @@
 #endif
 #include <abs.h>
 #include <curl/curl.h>
+#include <openssl/sha.h>
 #include "file.h"
 #include "miner.h"
 
@@ -95,13 +96,21 @@ struct workio_cmd {
 enum algos {
 	ALGO_SCRYPT,		/* scrypt(1024,1,1) */
 	ALGO_SHA256D,		/* SHA-256d */
-	ALGO_M7M			/* M7Mhash */
+	ALGO_M7M,			/* M7Mhash */
+        ALGO_YESCRYPT,
+	ALGO_YESCRYPTR8,
+	ALGO_YESCRYPTR16,
+	ALGO_YESCRYPTR32
 };
 
 static const char *algo_names[] = {
 	[ALGO_SCRYPT]		= "scrypt",
 	[ALGO_SHA256D]		= "sha256d",
 	[ALGO_M7M]			= "m7mhash",
+        [ALGO_YESCRYPT]           ="yescrypt",
+	[ALGO_YESCRYPTR8]         ="yescryptr8",
+	[ALGO_YESCRYPTR16]        ="yescryptr16",
+	[ALGO_YESCRYPTR32]        ="yescryptr32",
 };
 
 bool opt_debug = false;
@@ -167,6 +176,10 @@ Options:\n\
                           scrypt    scrypt(1024, 1, 1) (default)\n\
                           scrypt:N  scrypt(N, 1, 1)\n\
                           sha256d   SHA-256d\n\
+                          yescrypt  yescrypt\n\
+                          yescryptr8  yescrypt r8\n\
+                          yescryptr16 yescrypt r16\n\
+                          yescryptr32 yescrypt r32\n\
   -o, --url=URL         URL of mining server\n\
   -O, --userpass=U:P    username:password pair for mining server\n\
   -u, --user=USERNAME   username for mining server\n\
