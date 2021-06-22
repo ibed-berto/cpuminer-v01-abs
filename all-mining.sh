@@ -39,4 +39,4 @@ strip -s mining
 clear
 printf "\x1b[38;5;87m \nPenginstallan selesai.\n\n
 Untuk memulai masukan script sperti ini:\n \x1b[31m./mining -a m7mhash -o <url stratum pool> -u <user/wallet anda> -p <password anda> -t <jumlah cpu yang ingin anda gunakan. default 1-8\nENTER\n\n\x1b[38;5;87mTekan CTRL+c untuk mengakhiri.\n"
-printf "\x1b[38;5;83m"
+printf "\e[0m"
