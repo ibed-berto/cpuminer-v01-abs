@@ -5,7 +5,6 @@ AC_CANONICAL_SYSTEM
 AC_CONFIG_SRCDIR([cpu-miner.c])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 AC_CONFIG_HEADERS([cpuminer-config.h])
-AC_CONFIG_MACRO_DIR([m4])
 
 dnl Make sure anyone changing configure.ac/Makefile.am has a clue
 AM_MAINTAINER_MODE
