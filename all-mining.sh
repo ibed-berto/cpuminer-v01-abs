@@ -1,10 +1,10 @@
 #!/bin/bash
 
-
+echo -e "I ${purple}Sedang mendownload file. Pastikan koneksi internet anda bagus.$"
 
 rm -f config.status
 ./mining.sh 
-echo "Sedang menginstall"
+echo -e "I ${purple}Sedang menginstall file.$"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     ./nomacro.pl
