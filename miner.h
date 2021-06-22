@@ -152,7 +152,6 @@ void sha256_transform_8way(uint32_t *state, const uint32_t *block, int swap);
 #endif
 
 
-struct work;
 int scanhash_sha256d(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
 
 unsigned char *scrypt_buffer_alloc(int N);
@@ -209,23 +208,7 @@ extern int timeval_subtract(struct timeval *result, struct timeval *x,
 extern bool fulltest(const uint32_t *hash, const uint32_t *target);
 extern void diff_to_target(uint32_t *target, double diff);
 
-struct work {
-	uint32_t data[48];
-	uint32_t target[8];
 
-	double targetdiff;
-	double shareratio;
-	double sharediff;
-	uint32_t resnonce;
-
-	int height;
-	char *txs;
-	char *workid;
-
-	char *job_id;
-	size_t xnonce2_len;
-	unsigned char *xnonce2;
-};
 
 struct stratum_job {
 	char *job_id;
