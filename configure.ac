@@ -122,15 +122,7 @@ fi
 
 M7M_LIBS="abs/libm7m.a"
 
-AC_ARG_WITH([curl],
-   [  --with-curl=PATH         prefix where curl is installed [default=/usr]])
 
-if test -n "$with_curl" ; then
-   LIBCURL_CFLAGS="$LIBCURL_CFLAGS -I$with_curl/include"
-   LIBCURL_CPPFLAGS="$LIBCURL_CPPFLAGS -I$with_curl/include"
-   LIBCURL_LDFLAGS="-L$with_curl/lib $LIBCURL_LDFLAGS"
-   LIBCURL="-lcurl -lz"
-fi
 
 # SSL install path (for mingw : --with-crypto=/usr/local/ssl)
 AC_ARG_WITH([crypto],
@@ -153,12 +145,6 @@ AC_CHECK_LIB([ssl],[SSL_free], ssl=yes, ssl=no)
 
 LIBCURL_CHECK_CONFIG(, 7.15.2, ,
   [AC_MSG_ERROR([Missing required libcurl >= 7.15.2])])
-
-AC_SUBST(LIBCURL)
-AC_SUBST(LIBCURL_CFLAGS)
-AC_SUBST(LIBCURL_CPPFLAGS)
-
-# AC_SUBST(LIBCURL_LDFLAGS)
 
 AC_SUBST(JANSSON_LIBS)
 AC_SUBST(PTHREAD_FLAGS)
