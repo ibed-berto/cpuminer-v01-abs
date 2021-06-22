@@ -664,7 +664,7 @@ static void scrypt_1024_1_1_256_24way(const uint32_t *input,
 }
 #endif /* HAVE_SCRYPT_6WAY */
 
-extern int scanhash_scrypt(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done,
+int scanhash_scrypt(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done,
 	unsigned char *scratchbuf, uint32_t N)
 {
 	uint32_t *pdata = work->data;
