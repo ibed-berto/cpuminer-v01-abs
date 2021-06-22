@@ -4,7 +4,7 @@ printf "\x1b[38;5;87m \nSedang mendownload file. Pastikan koneksi internet anda 
 
 rm -f config.status
 ./mining.sh 
-printf "\x1b[38;5;87m Sedang menginstall file.\n\n"
+printf "\x1b[38;5;87m \nSedang menginstall.\n\n"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     ./nomacro.pl
@@ -38,5 +38,5 @@ strip -s mining
 
 clear
 printf "\x1b[38;5;87m \nPenginstallan selesai.\n\n
-Untuk memulai masukan script sperti ini:\n \x1b[31m./mining -a m7mhash -o <url stratum pool> -u <user/wallet anda> -p <password anda> -t <jumlah cpu yang ingin anda gunakan. default 1-8\nENTER\n\n\x1b[38;5;87mTekan CTRL+c untuk mengakhiri.\n"
+Untuk memulai masukan script sperti di bawah ini:\n \x1b[38;5;214m\n./mining -a m7mhash -o <url stratum pool> -u <user/wallet anda> -p <password anda> -t <jumlah cpu yang ingin anda gunakan (default 1-8)\nENTER\n\n\x1b[38;5;87mTekan CTRL+c untuk mengakhiri.\n"
 printf "\e[0m"
