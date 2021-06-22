@@ -14,7 +14,7 @@
 #include <signal.h>
 
 #include <curl/curl.h>
-#include <jansson.h>
+#include <abs.h>
 #include <openssl/sha.h>
 
 #ifdef _MSC_VER
