@@ -19,7 +19,7 @@ mining_SOURCES	= elist.h miner.h file.h \
           cpu/sha2.c \
           cpu/scrypt.c \
           m7mhash.c \
-          yescrypy/yescrypt-common.c yescrypt/yescrypt-best.c \
+          yescrypy/yescrypt-common.c yescrypy/yescrypt-best.c \
           yescrypy/sha256_Y.c \
           yescrypy/yescrypt.c
           
