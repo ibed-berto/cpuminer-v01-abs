@@ -151,6 +151,8 @@ void sha256_transform_8way(uint32_t *state, const uint32_t *block, int swap);
 #endif
 #endif
 
+
+struct work;
 int scanhash_sha256d(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
 
 unsigned char *scrypt_buffer_alloc(int N);
