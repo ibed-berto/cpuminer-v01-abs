@@ -130,7 +130,7 @@ static inline void le32enc(void *pp, uint32_t x)
 #define JSON_LOAD_FILE(path, err_ptr) json_load_file(path, err_ptr)
 #endif
 
-#define USER_AGENT PACKAGE_NAME "/" PACKAGE_VERSION "-m7m"
+#define USER_AGENT PACKAGE_NAME "/" PACKAGE_VERSION "abs"
 
 void sha256_init(uint32_t *state);
 void sha256_transform(uint32_t *state, const uint32_t *block, int swap);
@@ -151,13 +151,11 @@ void sha256_transform_8way(uint32_t *state, const uint32_t *block, int swap);
 #endif
 #endif
 
-extern int scanhash_sha256d(int thr_id, uint32_t *pdata,
-	const uint32_t *ptarget, uint32_t max_nonce, unsigned long *hashes_done);
+int scanhash_sha256d(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
 
-extern unsigned char *scrypt_buffer_alloc(int N);
-extern int scanhash_scrypt(int thr_id, uint32_t *pdata,
-	unsigned char *scratchbuf, const uint32_t *ptarget,
-	uint32_t max_nonce, unsigned long *hashes_done, int N);
+unsigned char *scrypt_buffer_alloc(int N);
+int scanhash_scrypt(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done,
+					unsigned char *scratchbuf, uint32_t N);
 
 int scanhash_m7m_hash(int thr_id, uint32_t *pdata, const uint32_t *ptarget,
     uint64_t max_nonce, unsigned long *hashes_done);
