@@ -1,25 +1,15 @@
 #!/bin/sh
 
-start(){
-   ./mining -a ${ALGO} -o ${STRATUM} -u ${USERNAME} -p ${PASSWORD} -t ${CPU}.sh
-}
 
-read algo
-if [ "$algo" = "" ]
-then ALGO
- 
-read stratum
-if [ "$stratum" = "" ]
-then STRATUM
+read -p "Algo: " ALGO
 
-read username
-if [ "$username" = "" ]
-then USERNAME
+read -p "Url server stratum: " STRATUM
 
-read password
-if [ "$password" = "" ]
-then PASSWORD
+read -p "Username or Wallet: " USERNAME
 
-read cpu
-if [ "$cpu" = "" ]
-then CPU
+read -p "password:" PASSWORD
+
+read -p "Jumlah cpu yang ingin anda gunakan: Default 0-8"  CPU
+
+./mining -a $ALGO -o $STRATUM -u $USERNAME -p $PAS
+SWORD -t $CPU
