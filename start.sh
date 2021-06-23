@@ -1,17 +1,20 @@
 #!/bin/sh
 
+abs=Algo:
+read -p "Algo: "  ALGO
+if [ "$ALGO" = "m7mhash" ] || [ "$ALGO" = "sha256d" ];
+then
 
-read -p 1;
- if [ $1 = "m7mhash" ] 
- then ALGO
+read -p "Stratum: " STRATUM
+read -p "User/Wallet: " USER
+read -p "Password: " PW
+read -p "Jumlah cpu yang ingin anda gunakan: " CPU
 
-read -p "Url server stratum: " STRATUM
+  ./mining -a $ALGO -o $STRATUM -u  $USER -p $PW -t $CPU
 
-read -p "Username or Wallet: " USERNAME
+elif [ "$ALGO" != "m7mhash" ] || [ "$ALGO" != "sha256d" ];
+then
+echo go back
+exit
 
-read -p "password:" PASSWORD
-
-read -p "Jumlah cpu yang ingin anda gunakan: Default 0-8"  CPU
-
-./mining -a $ALGO -o $STRATUM -u $USERNAME -p $PAS
-SWORD -t $CPU
+fi
