@@ -1,7 +1,9 @@
 #!/bin/sh
 
 
-read -p "Algo: " ALGO
+read -p 1;
+ if [ $1 = "m7mhash" ] 
+ then ALGO
 
 read -p "Url server stratum: " STRATUM
 
