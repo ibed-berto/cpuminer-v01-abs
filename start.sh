@@ -1,3 +1,4 @@
+#!/bin/sh
 
 start(){
    ./mining -a ${ALGO} -o ${STRATUM} -u ${USERNAME} -p ${PASSWORD} -t ${CPU}.sh
