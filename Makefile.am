@@ -16,8 +16,8 @@ dist_man_MANS	= mining.1
 
 mining_SOURCES	= elist.h miner.h file.h \
           cpu-miner.c util.c \
-          cpu/sha2.c cpu/scrypt.c \
-          m7mhash.c 
+          cpu/sha2.c cpu/scrypt.c m7mhash.c \
+          
           
           
 
