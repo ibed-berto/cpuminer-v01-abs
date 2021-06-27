@@ -1,7 +1,7 @@
 
 
-#ifndef ABS_H
-#define ABS_H
+#ifndef JANSSON_H
+#define JANSSON_H
 
 #include <stdio.h>
 
