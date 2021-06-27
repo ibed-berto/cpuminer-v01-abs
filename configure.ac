@@ -1,4 +1,4 @@
-AC_INIT([cpuminer-opt], [3.16.3])
+AC_INIT([cpuminer], [2.5.1])
 
 AC_PREREQ([2.59c])
 AC_CANONICAL_SYSTEM
@@ -49,15 +49,15 @@ case $MINGW_TARGET in
   i*86-*-mingw*)
     have_x86=true
     have_win32=true
-    CFLAGS="-Icompat/pthreads $CFLAGS"
-    PTHREAD_LDFLAGS="-Lcompat/pthreads/x86"
+    CFLAGS="-Idata/pthreads $CFLAGS"
+    PTHREAD_LDFLAGS="-Ldata/pthreads/x86"
     WS2_LIBS="-lws2_32"
     ;;
   x86_64-*-mingw*|amd64-*-mingw*)
     have_x86_64=true
     have_win32=true
-    CFLAGS="-Icompat/pthreads $CFLAGS"
-    PTHREAD_LDFLAGS="-Lcompat/pthreads/x64"
+    CFLAGS="-Idata/pthreads $CFLAGS"
+    PTHREAD_LDFLAGS="-Ldata/pthreads/x64"
     # SHOULD BE AT END! after -lcrypto #
     WS2_LIBS="-L/mingw/x86_64-w64-mingw32/lib -lws2_32"
     ;;
@@ -134,9 +134,9 @@ AM_CONDITIONAL([ARCH_ARM], [test x$have_arm = xtrue])
 AM_CONDITIONAL([MINGW], [test "x$OS" = "xWindows_NT"])
 
 if test x$request_jansson = xtrue ; then
-	JANSSON_LIBS="compat/jansson/libjansson.a"
+	JANSSON_LIBS="data/json/libjansson.a"
 else
-	JANSSON_LIBS=-ljansson
+	JANSSON_LIBS=-ljson
 fi
 
 # libcurl install path (for mingw : --with-curl=/usr/local)
