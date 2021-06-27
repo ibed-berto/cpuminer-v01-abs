@@ -7,7 +7,7 @@
 #include <inttypes.h>
 #include <sys/time.h>
 #include <pthread.h>
-#include <abs.h>
+#include <jansson.h>
 #include <curl/curl.h>
 
 #ifdef STDC_HEADERS
