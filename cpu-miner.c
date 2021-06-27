@@ -28,6 +28,8 @@
 #include <curl/curl.h>
 #include "file.h"
 #include "miner.h"
+#include "algo-gate-api.h"
+#include "sysinfos.c"
 
 #define PROGRAM_NAME		"mining"
 #define LP_SCANTIME		60
