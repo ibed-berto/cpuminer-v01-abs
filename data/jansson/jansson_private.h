@@ -1,7 +1,7 @@
-#ifndef ABS_PRIVATE_H
-#define ABS_PRIVATE_H
+#ifndef JANSSON_PRIVATE_H
+#define JANSSON_PRIVATE_H
 
-#include "abs.h"
+#include "jansson.h"
 #include "hashtable.h"
 
 #define container_of(ptr_, type_, member_)  \
