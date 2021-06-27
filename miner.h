@@ -163,6 +163,11 @@ extern int scanhash_scrypt(int thr_id, uint32_t *pdata,
 int scanhash_m7m_hash(int thr_id, uint32_t *pdata, const uint32_t *ptarget,
     uint64_t max_nonce, unsigned long *hashes_done);
 
+extrn int scanhash_yescryptr8(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
+extrn int scanhash_yescryptr16(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
+extrn int scanhash_yescryptr32(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
+
+
 struct thr_info {
 	int		id;
 	pthread_t	pth;
