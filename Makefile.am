@@ -42,9 +42,6 @@ if ARCH_ARM
 mining_SOURCES += cpu/sha2-arm.S cpu/scrypt-arm.S
 endif
 
-if ARCH_PPC
-mining_SOURCES += cpu/sha2-ppc.S cpu/scrypt-ppc.S
-endif
 endif
 
 mining_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
