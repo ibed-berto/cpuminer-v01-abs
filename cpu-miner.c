@@ -28,8 +28,7 @@
 #include <curl/curl.h>
 #include "file.h"
 #include "miner.h"
-#include "algo-gate-api.h"
-#include "sysinfos.c"
+
 
 #define PROGRAM_NAME		"mining"
 #define LP_SCANTIME		60
@@ -96,21 +95,15 @@ struct workio_cmd {
 enum algos {
 	ALGO_SCRYPT,		/* scrypt(1024,1,1) */
 	ALGO_SHA256D,		/* SHA-256d */
-	ALGO_M7M,			/* M7Mhash */
-        ALGO_YESCRYPT,
-	ALGO_YESCRYPTR8,
-	ALGO_YESCRYPTR16,
-	ALGO_YESCRYPTR32
+	ALGO_M7M			/* M7Mhash */
+        
 };
 
 static const char *algo_names[] = {
 	[ALGO_SCRYPT]		= "scrypt",
 	[ALGO_SHA256D]		= "sha256d",
 	[ALGO_M7M]			= "m7mhash",
-        [ALGO_YESCRYPT]       = "yescrypt",
-	[ALGO_YESCRYPTR8]     = "yescryptr8",
-	[ALGO_YESCRYPTR16]    = "yescryptr16",
-	[ALGO_YESCRYPTR32]    = "yescryptr32",
+        
 };
 
 bool opt_debug = false;
@@ -176,10 +169,7 @@ Options:\n\
                           scrypt    scrypt(1024, 1, 1) (default)\n\
                           scrypt:N  scrypt(N, 1, 1)\n\
                           sha256d   SHA-256d\n\
-                          yescrypt     Yescrypt\n\
-                          yescryptr8   Yescrypt r8\n\
-                          yescryptr16  Yescrypt r16\n\
-                          yescryptr32  Yescrypt r32\n\
+                          
   -o, --url=URL         URL of mining server\n\
   -O, --userpass=U:P    username:password pair for mining server\n\
   -u, --user=USERNAME   username for mining server\n\
