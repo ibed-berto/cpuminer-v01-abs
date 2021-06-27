@@ -36,19 +36,19 @@
 #define LT_OBJDIR ".libs/"
 
 /* Name of package */
-#define PACKAGE "json"
+#define PACKAGE "jansson"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "ibedberto@gmail.com"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "json"
+#define PACKAGE_NAME "jansson"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "json 1.3"
+#define PACKAGE_STRING "jansson 1.3"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "json"
+#define PACKAGE_TARNAME "jansson"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL ""
