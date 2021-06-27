@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <abs.h>
+#include <jansson.h>
 #include "hashtable.h"
-#include "abs_private.h"
+#include "jansson_private.h"
 #include "utf.h"
 #include "util.h"
 
