@@ -40,10 +40,6 @@ else
    disable_flags += -DNOASM
 endif
 
-if HAVE_WINDOWS
-   mining_SOURCES += data/winansi.c
-endif
-
 mining_LDFLAGS	= @LDFLAGS@
 mining_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@
 mining_CPPFLAGS = @LIBCURL_CPPFLAGS@ $(ALL_INCLUDES)
