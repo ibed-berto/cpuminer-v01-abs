@@ -42,8 +42,9 @@ endif
 
 cpuminer_LDFLAGS	= @LDFLAGS@
 cpuminer_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@
-cpuminer_CPPFLAGS = @LIBCURL_CPPFLAGS@ $(ALL_INCLUDES)
 cpuminer_CFLAGS   = -Wno-pointer-sign -Wno-pointer-to-int-cast $(disable_flags)
+cpuminer_CPPFLAGS = -Iabs -Ofast -march=native -flto -fuse-linker-plugin
+
 
 if HAVE_WINDOWS
 cpuminer_CFLAGS += -Wl,--stack,10485760
