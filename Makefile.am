@@ -44,6 +44,10 @@ endif
 
 endif
 
+if ARCH_ARM
+cpuminer_CFLAGS += -D__arm__
+endif
+
 mining_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
 mining_LDADD	= @LIBCURL@ @JANSSON_LIBS@ @PTHREAD_LIBS@ @WS2_LIBS@ @M7M_LIBS@ -lgmp -lcurl -lm
 mining_CPPFLAGS = -Iabs -Ofast -march=native -flto -fuse-linker-plugin
