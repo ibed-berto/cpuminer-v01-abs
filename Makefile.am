@@ -21,13 +21,13 @@ mining_SOURCES	=   elist.h miner.h file.h \
           m7mhash.c
 if USE_ASM
 if ARCH_x86
-mining_SOURCES += sha2-x86.S scrypt-x86.S
+mining_SOURCES += cpu/sha2-x86.S cpu/scrypt-x86.S
 endif
 if ARCH_x86_64
-mining_SOURCES += sha2-x64.S scrypt-x64.S
+mining_SOURCES += cpu/sha2-x64.S cpu/scrypt-x64.S
 endif
 if ARCH_ARM
-mining_SOURCES += sha2-arm.S scrypt-arm.S
+mining_SOURCES += cpu/sha2-arm.S cpu/scrypt-arm.S
 endif
 endif
 
