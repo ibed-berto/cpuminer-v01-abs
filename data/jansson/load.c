@@ -8,8 +8,8 @@
 #include <stdarg.h>
 #include <assert.h>
 
-#include <abs.h>
-#include "abs_private.h"
+#include <jansson.h>
+#include "jansson_private.h"
 #include "strbuffer.h"
 #include "utf.h"
 
