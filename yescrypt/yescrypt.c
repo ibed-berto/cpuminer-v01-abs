@@ -5,7 +5,7 @@
 #include "file.h"
 
 #include "yescrypt.h"
-#include "algo/sha/hmac-sha256-hash.h"
+#include "abs/sha/hmac-sha256-hash.h"
 #include "algo-gate-api.h"
 
 #define BYTES2CHARS(bytes) \
