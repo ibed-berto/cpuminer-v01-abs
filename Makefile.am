@@ -1,5 +1,5 @@
 if WANT_JANSSON
-JANSSON_INCLUDES= -I$(top_srcdir)/data/json
+JANSSON_INCLUDES= -I$(top_srcdir)/data/jansson
 else
 JANSSON_INCLUDES=
 endif
