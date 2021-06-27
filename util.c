@@ -12,7 +12,7 @@
 #include <limits.h>
 #include <errno.h>
 #include <unistd.h>
-#include <abs.h>
+#include <jansson.h>
 #include <curl/curl.h>
 #include <time.h>
 #if defined(WIN32)
