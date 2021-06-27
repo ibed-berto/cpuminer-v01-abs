@@ -1,5 +1,5 @@
 if WANT_JANSSON
-SUBDIRS	= json
+SUBDIRS	= jansson
 else
 SUBDIRS	=
 endif
