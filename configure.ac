@@ -98,7 +98,7 @@ then
   )
 fi
 
-AC_CHECK_LIB(json, json_loads, request_json=false, request_json=true)
+AC_CHECK_LIB(jansson, json_loads, request_jansson=false, request_jansson=true)
 AC_CHECK_LIB([pthread], [pthread_create], PTHREAD_LIBS="-lpthread",
   AC_CHECK_LIB([pthreadGC2], [pthread_create], PTHREAD_LIBS="-lpthreadGC2",
     AC_CHECK_LIB([pthreadGC1], [pthread_create], PTHREAD_LIBS="-lpthreadGC1",
@@ -115,7 +115,7 @@ AM_CONDITIONAL([ARCH_PPC], [test x$have_ppc = xtrue])
 
 if test x$request_json = xtrue
 then
-	JANSSON_LIBS="data/json/libjansson.a"
+	JANSSON_LIBS="data/jansson/libjansson.a"
 else
 	JANSSON_LIBS=-ljansson
 fi
@@ -135,7 +135,7 @@ AC_SUBST(M7M_LIBS)
 AC_CONFIG_FILES([
 	Makefile
 	data/Makefile
-	data/json/Makefile
+	data/jansson/Makefile
         abs/Makefile
 	])
 AC_OUTPUT
