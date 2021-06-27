@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "yescrypy/yescrypt.h"
+#include "yescrypt.h"
 
 int do_scanhash(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done, void (*hash_func)(const char *, char *, uint32_t))
 {
