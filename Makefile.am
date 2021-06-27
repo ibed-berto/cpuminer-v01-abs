@@ -45,7 +45,7 @@ endif
 endif
 
 if ARCH_ARM
-cpuminer_CFLAGS += -D__arm__
+mining_CFLAGS += -D__arm__
 endif
 
 mining_LDFLAGS	= $(PTHREAD_FLAGS) -flto -fuse-linker-plugin -Ofast
