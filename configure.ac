@@ -139,6 +139,8 @@ else
 	JANSSON_LIBS=-ljson
 fi
 
+M7M_LIBS="abs/libm7m.a"
+
 # libcurl install path (for mingw : --with-curl=/usr/local)
 AC_ARG_WITH([curl],
    [  --with-curl=PATH         prefix where curl is installed [default=/usr]])
@@ -190,5 +192,6 @@ AC_CONFIG_FILES([
 	Makefile
 	data/Makefile
 	data/json/Makefile
+        abs/Makefile
 	])
 AC_OUTPUT
