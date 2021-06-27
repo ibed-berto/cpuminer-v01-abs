@@ -19,14 +19,7 @@ mining_SOURCES	=
           cpu-miner.c util.c \
           cpu/sha2.c \
           cpu/scrypt.c \
-          m7mhash.c \
-          
-         
-          
-          
-          
-
-
+          m7mhash.c
 if USE_ASM
 if ARCH_x86
 mining_SOURCES += sha2-x86.S scrypt-x86.S
